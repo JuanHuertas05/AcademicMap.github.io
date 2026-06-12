@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Estado global del pensum, prerrequisitos, horarios y homologaciones.
+    // Lo pueden leer los usuarios autenticados; solo admins lo pueden cambiar.
+    match /global/appState {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Avance personal de cada estudiante.
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Lista de administradores. Crear estos documentos manualmente desde Firebase Console.
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}

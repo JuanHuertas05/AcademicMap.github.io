@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibq:#2563eb;--ibq-l:#dbeafe;--ibq-d:#1e3a8a;
+  --quf:#9333ea;--quf-l:#f3e8ff;--quf-d:#6b21a8;
+  --shared:#d97706;--shared-l:#fef3c7;--shared-d:#78350f;
+  --pro:#7c3aed;--pro-l:#ede9fe;--pro-d:#3b0764;
+  --elec:#ea580c;--elec-l:#fff7ed;--elec-d:#7c2d12;
+  --done-bg:#dcfce7;--done-c:#15803d;--done-b:#4ade80;
+  --blocked-bg:#f1f5f9;--blocked-c:#94a3b8;
+  --avail-bg:#dbeafe;--avail-c:#1d4ed8;
+  --danger:#dc2626;--warn:#d97706;--ok:#16a34a;
+  --radius:16px;--radius-sm:10px;--radius-lg:20px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 4px 24px rgba(0,0,0,.12);
+  --font:'Nunito',sans-serif;
+}
+body{font-family:var(--font);background:#f0f4f8;color:#1e293b;font-size:16px;line-height:1.6;min-height:100vh}
+button{cursor:pointer;font-family:var(--font);font-size:15px}
+input,select,textarea{font-family:var(--font);font-size:15px}
+
+/* ── NAV ── */
+.nav{background:#fff;border-bottom:1.5px solid #e2e8f0;position:sticky;top:0;z-index:200;padding:0 1.5rem;box-shadow:var(--shadow)}
+.nav-inner{display:flex;align-items:center;gap:1rem;height:60px;max-width:1500px;margin:0 auto}
+.nav-brand{font-size:16px;font-weight:800;color:#1e293b;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.nav-brand span{color:var(--ibq)}
+.nav-tabs{display:flex;gap:4px;flex:1;overflow-x:auto}
+.ntab{background:none;border:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;color:#64748b;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ntab:hover{background:#f1f5f9;color:#1e293b}
+.ntab.on{background:var(--ibq-l);color:var(--ibq-d)}
+.nav-mode{display:flex;align-items:center;gap:8px;margin-left:auto;background:#f1f5f9;border-radius:20px;padding:4px}
+.mode-btn{padding:5px 14px;border-radius:16px;border:none;font-size:13px;font-weight:700;background:none;color:#64748b;transition:all .15s}
+.mode-btn.on{background:var(--ibq);color:#fff}
+.nav-pills{display:flex;gap:8px}
+.npill{font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px;border:none}
+.npill-ibq{background:var(--ibq-l);color:var(--ibq-d)}
+.npill-quf{background:var(--quf-l);color:var(--quf-d)}
+
+/* ── LAYOUT ── */
+.main{max-width:1500px;margin:0 auto;padding:1.5rem}
+.view{display:none}.view.on{display:block}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:26px;font-weight:800;color:#1e293b;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px}
+
+/* ── CARDS ── */
+.card{background:#fff;border:1.5px solid #e2e8f0;border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow)}
+.card-sm{padding:1.25rem}
+.card-title{font-size:13px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
+.stat-box{background:#fff;border:1.5px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem 1rem;text-align:center;box-shadow:var(--shadow)}
+.stat-n{font-size:32px;font-weight:800;line-height:1}
+.stat-l{font-size:14px;color:#64748b;margin-top:4px;font-weight:600}
+
+/* ── PROG ── */
+.prog-wrap{margin-bottom:1rem}
+.prog-label{display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:#334155;margin-bottom:6px}
+.prog-bar{height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;transition:width .5s ease}
+.pf-ibq{background:var(--ibq)}
+.pf-quf{background:var(--quf)}
+
+/* ── DASH ── */
+.dash-grid{display:grid;grid-template-columns:340px 1fr;gap:1.25rem}
+.hello{font-size:22px;font-weight:800;margin-bottom:1.25rem}
+.hello span{color:var(--ibq)}
+
+.avail-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);font-size:15px;background:#f8fafc;margin-bottom:6px;border:1px solid #e2e8f0;font-weight:600}
+.avail-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ad-avail{background:var(--ok)}
+.ad-warn{background:var(--warn)}
+
+/* Timeline */
+.tl-step{flex:1;text-align:center;position:relative}
+.tl-dot{width:32px;height:32px;border-radius:50%;border:2.5px solid #cbd5e1;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:13px;font-weight:800;background:#fff;position:relative;z-index:1;cursor:pointer}
+.tl-dot.tl-done{background:var(--ibq);border-color:var(--ibq);color:#fff}
+.tl-dot.tl-curr{background:var(--warn);border-color:var(--warn);color:#fff;box-shadow:0 0 0 4px rgba(217,119,6,.2)}
+.tl-line{position:absolute;top:16px;left:50%;right:-50%;height:2.5px;background:#cbd5e1;z-index:0}
+.tl-label{font-size:12px;font-weight:700;color:#94a3b8}
+.timeline{display:flex;align-items:center;gap:0;margin:.5rem 0}
+
+/* Badges */
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;font-size:14px;font-weight:700;background:#f8fafc;color:#94a3b8}
+.badge.earned{background:var(--ibq-l);color:var(--ibq-d);border-color:var(--ibq)}
+
+/* ── PENSUM ── */
+.pen-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.pen-col-head{padding:1rem 1.25rem;border-bottom:1.5px solid #e2e8f0;display:flex;align-items:baseline;gap:10px;background:#f8fafc;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+.pen-col-head h3{font-size:18px;font-weight:800}
+.pen-col-head span{font-size:14px;color:#64748b;font-weight:600}
+.sem-block{padding:1rem 1.25rem;border-bottom:1px solid #f1f5f9}
+.sem-block:last-child{border-bottom:none}
+.sem-lbl{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px}
+.chip{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);font-size:15px;margin-bottom:6px;border:1.5px solid transparent;cursor:pointer;transition:all .15s}
+.chip:hover{transform:translateX(3px)}
+.chip-name{font-size:16px;font-weight:700;flex:1}
+.chip-ibq{background:var(--ibq-l);color:var(--ibq-d);border-color:#93c5fd}
+.chip-quf{background:var(--quf-l);color:var(--quf-d);border-color:#86efac}
+.chip-shared{background:var(--shared-l);color:var(--shared-d);border-color:#fcd34d}
+.chip-done{background:var(--done-bg);color:var(--done-c);border-color:var(--done-b)}
+.chip-blocked{background:var(--blocked-bg);color:var(--blocked-c);border-color:#cbd5e1;opacity:.75}
+.chip-cred{font-size:13px;font-weight:800;background:rgba(0,0,0,.08);padding:2px 8px;border-radius:20px;white-space:nowrap}
+.status-icon{font-size:17px;flex-shrink:0}
+
+/* ── FILTER BUTTONS ── */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.fb{padding:7px 16px;border-radius:20px;border:1.5px solid #cbd5e1;background:#fff;color:#64748b;font-size:14px;font-weight:700;transition:all .15s}
+.fb:hover{background:#f1f5f9}
+.fb.on{background:#1e293b;color:#fff;border-color:#1e293b}
+
+/* ── SKILL TREE ── */
+.tree-wrap{overflow:auto;position:relative;height:560px;background:#f8fafc;border-radius:var(--radius-lg);border:1.5px solid #e2e8f0}
+#skill-canvas{position:relative;min-width:900px;min-height:520px}
+.tree-filter{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.tf-btn{padding:6px 16px;border-radius:20px;border:1.5px solid #cbd5e1;background:#fff;color:#64748b;font-size:14px;font-weight:700;transition:all .15s}
+.tf-btn:hover{background:#f1f5f9}
+.tf-btn.on{background:#1e293b;color:#fff;border-color:#1e293b}
+.node{position:absolute;border-radius:var(--radius-sm);border:2px solid transparent;padding:8px 10px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;min-width:120px;max-width:140px;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.node:hover{transform:scale(1.07);z-index:10;box-shadow:var(--shadow-lg)}
+.node-done{background:var(--done-bg);color:var(--done-c);border-color:var(--done-b)}
+.node-avail{background:var(--ibq-l);color:var(--ibq-d);border-color:var(--ibq)}
+.node-blocked{background:#f1f5f9;color:#94a3b8;border-color:#cbd5e1}
+.node-quf{background:var(--quf-l);color:var(--quf-d);border-color:var(--quf)}
+svg.edges{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.tree-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;font-weight:700;color:#64748b;margin-bottom:.75rem}
+.tl-item{display:flex;align-items:center;gap:6px}
+.tl-dot2{width:12px;height:12px;border-radius:4px}
+
+/* ── PLANNER ── */
+.plan-layout{display:grid;grid-template-columns:280px 1fr;gap:1.25rem}
+.pcard{background:#fff;border:1.5px solid #e2e8f0;border-radius:var(--radius);overflow:hidden;margin-bottom:.75rem;box-shadow:var(--shadow);transition:box-shadow .15s}
+.pcard:hover{box-shadow:var(--shadow-lg)}
+.pcard-head{padding:.875rem 1.25rem;display:flex;align-items:center;gap:10px;border-bottom:1.5px solid #f1f5f9}
+.pcard-tag{font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px}
+.ptag-ibq{background:var(--ibq-l);color:var(--ibq-d)}
+.ptag-quf{background:var(--quf-l);color:var(--quf-d)}
+.ptag-shared{background:var(--shared-l);color:var(--shared-d)}
+.pcard-name{font-size:18px;font-weight:700;flex:1;color:#1e293b}
+.pcard-cred{font-size:14px;font-weight:800;color:#64748b;background:#f1f5f9;padding:3px 10px;border-radius:20px}
+.pcard-body{padding:.875rem 1.25rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.preq-chip{font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px;border:1.5px solid #e2e8f0}
+.preq-met{background:var(--done-bg);color:var(--done-c);border-color:var(--done-b)}
+.preq-unmet{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.status-pill{font-size:13px;font-weight:800;padding:4px 12px;border-radius:20px}
+.sp-done{background:var(--done-bg);color:var(--done-c)}
+.sp-avail{background:var(--avail-bg);color:var(--avail-c)}
+.sp-blocked{background:#fee2e2;color:#991b1b}
+.sp-free{background:var(--ibq-l);color:var(--ibq-d)}
+.act-btn{padding:5px 14px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:800;transition:opacity .12s;margin-left:auto}
+.btn-do{background:var(--quf);color:#fff}
+.btn-do:hover{opacity:.85}
+.btn-un{background:#f1f5f9;color:#475569}
+.btn-un:hover{background:#e2e8f0}
+.sem-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.sp{padding:6px 14px;border-radius:20px;border:1.5px solid #cbd5e1;background:#fff;color:#64748b;font-size:14px;font-weight:700}
+.sp.on{background:#1e293b;color:#fff;border-color:#1e293b}
+
+/* ── SCHEDULER ── */
+.sched-layout{display:grid;grid-template-columns:280px 1fr;gap:1.25rem}
+.mat-picker{display:flex;flex-direction:column;gap:5px;max-height:320px;overflow-y:auto}
+.mat-pick-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .1s}
+.mat-pick-item:hover{background:#f1f5f9}
+.mat-pick-item.sel{background:var(--ibq-l);border-color:var(--ibq);color:var(--ibq-d)}
+.slot-form{background:#f8fafc;border-radius:var(--radius-sm);padding:1rem;margin-top:.75rem;display:flex;flex-direction:column;gap:8px;border:1.5px solid #e2e8f0}
+.slot-form select,.slot-form input{padding:8px 12px;border-radius:var(--radius-sm);border:1.5px solid #cbd5e1;background:#fff;color:#1e293b;width:100%}
+.add-slot-btn{padding:8px 14px;border-radius:var(--radius-sm);background:var(--ibq);color:#fff;border:none;font-size:15px;font-weight:700}
+.cal-wrap{overflow-x:auto}
+.cal-grid{display:grid;grid-template-columns:56px repeat(7,1fr);min-width:980px;gap:0;border:1.5px solid #e2e8f0;border-radius:var(--radius-lg);overflow:hidden}
+.cal-head{background:#f8fafc;padding:10px 6px;text-align:center;font-size:14px;font-weight:800;color:#475569;border-bottom:1.5px solid #e2e8f0}
+.cal-time{padding:5px 6px;text-align:right;font-size:12px;font-weight:700;color:#94a3b8;border-right:1.5px solid #e2e8f0;background:#fafafa}
+.cal-cell{position:relative;border:0.5px solid #e2e8f0;min-height:36px;background:#fff}
+.class-block{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 5px;font-size:11px;font-weight:700;line-height:1.3;z-index:1;overflow:hidden;cursor:pointer}
+.conflict-block{border:2.5px solid var(--danger)!important;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.conflict-banner{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;border-radius:var(--radius-sm);padding:.875rem 1.25rem;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.sched-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem}
+.sched-stat{background:#fff;border:1.5px solid #e2e8f0;border-radius:var(--radius-sm);padding:1rem;text-align:center;box-shadow:var(--shadow)}
+.ss-n{font-size:24px;font-weight:800}
+.ss-l{font-size:13px;font-weight:700;color:#64748b;margin-top:3px}
+.sched-toolbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.btn-primary{padding:8px 18px;border-radius:var(--radius-sm);background:var(--ibq);color:#fff;border:none;font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{padding:8px 18px;border-radius:var(--radius-sm);background:#fff;border:1.5px solid #cbd5e1;color:#475569;font-size:15px;font-weight:700}
+.btn-secondary:hover{background:#f1f5f9}
+.btn-danger{padding:8px 18px;border-radius:var(--radius-sm);background:#fee2e2;border:1.5px solid #fca5a5;color:#991b1b;font-size:15px;font-weight:700}
+
+/* ── EDITOR ── */
+.editor-layout{display:grid;grid-template-columns:320px 1fr;gap:1.25rem}
+.mat-edit-list{display:flex;flex-direction:column;gap:5px;max-height:calc(100vh - 200px);overflow-y:auto}
+.mat-edit-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+.mat-edit-item:hover{background:#f1f5f9}
+.mat-edit-item.sel{background:var(--ibq-l);border-color:var(--ibq);color:var(--ibq-d)}
+.editor-form{background:#fff;border-radius:var(--radius-lg);border:1.5px solid #e2e8f0;padding:1.5rem;box-shadow:var(--shadow)}
+.form-group{margin-bottom:1.25rem}
+.form-label{font-size:14px;font-weight:800;color:#475569;margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.05em}
+.form-input{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid #cbd5e1;background:#f8fafc;font-size:16px;font-weight:600;color:#1e293b;transition:border-color .15s}
+.form-input:focus{outline:none;border-color:var(--ibq);background:#fff}
+.form-select{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid #cbd5e1;background:#f8fafc;font-size:16px;font-weight:600;color:#1e293b}
+.prereq-editor{background:#f8fafc;border-radius:var(--radius-sm);padding:1rem;border:1.5px solid #e2e8f0}
+.prereq-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);background:#fff;border:1.5px solid #e2e8f0;margin-bottom:6px;font-size:15px;font-weight:700}
+.prereq-del{padding:4px 10px;border-radius:var(--radius-sm);background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;font-size:13px;font-weight:700;margin-left:auto}
+.prereq-add-row{display:flex;gap:8px;margin-top:8px}
+.prereq-add-row select{flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1.5px solid #cbd5e1;background:#fff;font-size:14px;font-weight:600}
+.prereq-add-btn{padding:8px 14px;border-radius:var(--radius-sm);background:var(--ibq);color:#fff;border:none;font-size:14px;font-weight:700}
+.chain-viz{background:#f0f9ff;border-radius:var(--radius-sm);padding:1rem;border:1.5px solid #bae6fd;font-size:15px;font-weight:600;color:#0369a1;max-height:200px;overflow-y:auto}
+.chain-arrow{text-align:center;color:#94a3b8;font-size:18px;margin:2px 0}
+.chain-node-viz{background:#fff;border:1.5px solid #bae6fd;border-radius:8px;padding:6px 12px;text-align:center;font-weight:700}
+.error-banner{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--radius-sm);padding:.875rem 1.25rem;font-size:15px;font-weight:700;color:#991b1b;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.success-banner{background:var(--done-bg);border:1.5px solid var(--done-b);border-radius:var(--radius-sm);padding:.875rem 1.25rem;font-size:15px;font-weight:700;color:var(--done-c);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.editor-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.5rem;padding-top:1rem;border-top:1.5px solid #e2e8f0}
+.import-export{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.25rem}
+.mat-edit-search{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid #cbd5e1;font-size:15px;font-weight:600;color:#1e293b;margin-bottom:.75rem;background:#f8fafc}
+.cat-badge{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:auto}
+.empty-msg{text-align:center;padding:3rem;color:#94a3b8;font-size:16px;font-weight:600}.sched-filters,.planner-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.875rem}.mini-pill{padding:6px 12px;border-radius:20px;border:1.5px solid #cbd5e1;background:#fff;color:#64748b;font-size:13px;font-weight:800;cursor:pointer}.mini-pill.on{background:#1e293b;color:#fff;border-color:#1e293b}.sched-sem-block,.planner-sem-block{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:.875rem;margin-bottom:.875rem}.sched-sem-head,.planner-sem-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:.75rem}.sched-sem-title,.planner-sem-title{font-size:14px;font-weight:900;color:#334155;text-transform:uppercase;letter-spacing:.05em}.sched-course-list,.planner-course-list{display:flex;flex-direction:column;gap:8px}.sched-course-card,.planner-course-card{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:.85rem;display:flex;gap:.75rem;align-items:flex-start}.sched-course-card.sel{border-color:var(--ibq);background:var(--ibq-l)}.sched-course-main,.planner-course-main{flex:1;min-width:0}.sched-course-name,.planner-course-name{font-size:16px;font-weight:800;color:#1e293b;margin-bottom:4px}.sched-course-meta,.planner-course-meta{display:flex;flex-wrap:wrap;gap:6px}.meta-chip{font-size:11px;font-weight:800;padding:3px 8px;border-radius:20px;background:#e2e8f0;color:#475569}.meta-chip.ok{background:var(--done-bg);color:var(--done-c)}.meta-chip.warn{background:#fef3c7;color:#92400e}.meta-chip.bad{background:#fee2e2;color:#991b1b}.sched-course-action,.planner-course-action{display:flex;flex-direction:column;gap:8px;align-items:flex-end}.soft-btn{padding:7px 12px;border-radius:10px;border:1.5px solid #cbd5e1;background:#fff;color:#475569;font-size:13px;font-weight:800}.soft-btn:hover{background:#f1f5f9}.soft-btn.primary{background:var(--ibq);border-color:var(--ibq);color:#fff}.soft-btn.primary:hover{opacity:.9}.schedule-side-note{font-size:13px;color:#64748b;font-weight:700}.section-list{display:flex;flex-direction:column;gap:8px;max-height:380px;overflow-y:auto}.section-group-head{font-size:12px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin:4px 0}.section-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:.85rem}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:.5rem}.section-lines{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#475569}.section-line{padding:4px 8px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0}.section-sub{font-size:12px;color:#94a3b8;font-weight:700}.section-add{padding:7px 12px;border-radius:10px;background:var(--ibq);color:#fff;border:none;font-size:13px;font-weight:800;white-space:nowrap}.section-add:hover{opacity:.9}.sched-help{font-size:13px;color:#64748b;font-weight:700;line-height:1.45}.sched-empty{font-size:14px;color:#94a3b8;font-weight:700;background:#fff;border:1.5px dashed #cbd5e1;border-radius:var(--radius-sm);padding:1rem}.class-block small{display:block;font-size:10px;font-weight:800;opacity:.9}.planner-board{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1rem}.planner-cart{position:sticky;top:85px;height:fit-content}.cart-list{display:flex;flex-direction:column;gap:8px}.cart-item{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:.75rem}.cart-item-main{flex:1}.cart-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:.75rem}.cart-stat{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:.75rem;text-align:center}.cart-stat strong{display:block;font-size:22px;color:#1e293b}.banner-inline{border-radius:12px;padding:.75rem 1rem;font-size:14px;font-weight:700;margin-bottom:.75rem}.banner-inline.warn{background:#fef3c7;color:#92400e;border:1.5px solid #fcd34d}.banner-inline.ok{background:var(--done-bg);color:var(--done-c);border:1.5px solid var(--done-b)}.editor-schedule-wrap{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:1rem}.editor-schedule-section{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:.85rem;margin-bottom:.85rem}.editor-schedule-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:.75rem 0}.editor-slot-row{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr 1fr auto;gap:8px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px;margin-bottom:6px}.tiny-danger{padding:6px 10px;border-radius:10px;border:1px solid #fca5a5;background:#fee2e2;color:#991b1b;font-size:12px;font-weight:800}.tiny-add{padding:6px 10px;border-radius:10px;border:1px solid #93c5fd;background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:800}.scheduler-layout-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:.85rem}@media(max-width:1100px){.planner-board{grid-template-columns:1fr}.planner-cart{position:static}.editor-schedule-grid,.editor-slot-row{grid-template-columns:1fr}.sched-layout{grid-template-columns:1fr}.cal-grid{min-width:820px}}
+.tooltip{position:fixed;background:#1e293b;color:#fff;font-size:14px;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);pointer-events:none;z-index:999;display:none;max-width:260px;line-height:1.5;box-shadow:var(--shadow-lg)}
+@media(max-width:900px){.pen-cols,.plan-layout,.sched-layout,.dash-grid,.editor-layout{grid-template-columns:1fr}.stat-row{grid-template-columns:1fr 1fr}}
+
+
+/* V4.1 — Manual de Marca Icesi 2026 + contador real por planificación */
+:root{
+  --brand-blue:#5454e9;--brand-white:#fff;--brand-gray-1:#88898c;--brand-gray-2:#cecfd4;--brand-yellow:#e4eb60;--brand-green:#4cb979;--brand-purple:#865cf0;--brand-orange:#e9683b;
+  --ibq:#5454e9;--ibq-l:#eeeeff;--ibq-d:#3434b7;--quf:#865cf0;--quf-l:#f1ecff;--quf-d:#5a36c5;--shared:#e4eb60;--shared-l:#fbfdd8;--shared-d:#5d5f00;
+  --done-bg:#e8f8ef;--done-c:#1d6f43;--done-b:#4cb979;--blocked-bg:#f3f4f6;--blocked-c:#88898c;--avail-bg:#eeeeff;--avail-c:#5454e9;--danger:#e9683b;--warn:#e9683b;--ok:#4cb979;
+  --radius:14px;--radius-sm:8px;--radius-lg:18px;--shadow:0 2px 10px rgba(0,0,0,.06);--shadow-lg:0 12px 32px rgba(84,84,233,.12);--font:'Plus Jakarta Sans',Arial,sans-serif;
+}
+body,button,input,select,textarea{font-family:var(--font)!important} body{background:#f7f8fb;color:#111827;letter-spacing:-.01em}
+.nav{background:#fff;border-bottom:1px solid #eceef4;box-shadow:0 1px 0 rgba(0,0,0,.04);position:sticky}.nav::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--brand-blue)}.nav-inner{height:70px;padding-top:6px}.nav-brand{gap:12px}.brand-word{color:var(--brand-blue)!important;font-size:24px;font-weight:800;letter-spacing:-.055em;text-transform:lowercase;line-height:1}.brand-divider{width:1px;height:26px;background:#cecfd4;display:inline-block}.brand-product{font-size:14px;font-weight:600;color:#545967;white-space:nowrap}.brand-app-tagline::after{content:"Llega más lejos";font-size:12px;font-weight:700;color:var(--brand-blue)}
+.ntab{border-radius:10px;font-weight:600;color:#5f6675}.ntab:hover{background:#f4f5ff;color:var(--brand-blue)}.ntab.on{background:#eef0ff;color:var(--brand-blue)}.mode-btn.on,.mini-pill.on,.fb.on,.tf-btn.on,.sp.on{background:var(--brand-blue)!important;color:#fff!important;border-color:var(--brand-blue)!important}.npill{background:#f4f5ff;color:var(--brand-blue);border-radius:999px}.npill-quf{background:#f1ecff;color:var(--brand-purple)}
+.card,.card-sm,.dash-main,.tree-wrap,.semester-workspace,.pensum-semester-group,.hom-editor-item{background:#fff;border:1px solid #e5e7eb;box-shadow:var(--shadow)}.section-title,.card-title{color:#111827;letter-spacing:-.03em}.btn-primary{background:var(--brand-blue)!important;color:#fff!important;border-color:var(--brand-blue)!important;border-radius:10px!important;box-shadow:none!important}.btn-secondary,.soft-btn,.mini-pill,.fb,.tf-btn,.sp{border-radius:10px!important;border:1px solid #d7d9e2!important;background:#fff!important;color:#545967!important;font-weight:700!important}.form-input,.form-select,textarea{border:1.5px solid #d7d9e2!important;border-radius:10px!important}.form-input:focus,.form-select:focus,textarea:focus{outline:3px solid rgba(84,84,233,.14);border-color:var(--brand-blue)!important}
+.timeline{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(52px,1fr))!important;gap:14px 8px!important;margin:.75rem 0 .25rem!important}.tl-step{min-width:0}.tl-line{display:none!important}.tl-dot{width:38px!important;height:38px!important;font-size:14px!important;margin:0 auto}.tl-dot.tl-done{background:var(--brand-green)!important;color:#fff!important;border-color:var(--brand-green)!important}.tl-dot.tl-curr{background:var(--brand-orange)!important;color:#fff!important;border:5px solid rgba(233,104,59,.22)!important}.tl-label{font-size:12px!important;text-align:center;color:#88898c!important}
+.tree-wrap{height:820px;border-radius:18px;background:#fff}#skill-canvas{min-width:2260px!important;min-height:900px!important}.sem-map-label{position:absolute;top:18px;width:170px;text-align:center;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#88898c}.node{width:170px!important;min-width:170px;max-width:170px;height:98px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;border-radius:10px!important;padding:10px 12px;font-size:13px;font-weight:500;line-height:1.28;box-shadow:0 4px 16px rgba(0,0,0,.06)!important}.node-title{font-weight:600;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.node-badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;flex-shrink:0}.node-badge,.meta-chip,.component-pill{border-radius:999px!important;font-weight:700!important}.node-done{background:#e8f8ef!important;color:#1d6f43!important;border-color:#4cb979!important}.node-avail{background:#eeeeff!important;color:#3434b7!important;border-color:#5454e9!important}.node-quf{background:#f1ecff!important;color:#5a36c5!important;border-color:#865cf0!important}.node-shared{background:#fbfdd8!important;color:#5d5f00!important;border-color:#e4eb60!important}.node-blocked{background:#f3f4f6!important;color:#88898c!important;border:1.5px dashed #cecfd4!important;box-shadow:none!important}.node-blocked .node-badge{background:#fff!important;color:#88898c!important;border-color:#cecfd4!important}.node-dim{opacity:.38;filter:saturate(.8)}.node-selected{outline:3px solid rgba(84,84,233,.22);z-index:20}svg.edges path.edge-focus{opacity:.9;stroke-width:2.7}
+.meta-chip.shared,.component-pill.shared{background:#fbfdd8!important;color:#5d5f00!important;border-color:#e4eb60!important}.meta-chip.hom,.component-pill.hom,.meta-chip.ok{background:#e8f8ef!important;color:#1d6f43!important;border-color:#4cb979!important}.meta-chip.warn,.meta-chip.bad{background:#fff3ec!important;color:#b7431e!important;border-color:#e9683b!important}.meta-chip.teo,.component-pill.teo{background:#eeeeff!important;color:#3434b7!important;border-color:#5454e9!important}.meta-chip.lab,.component-pill.lab{background:#f1ecff!important;color:#5a36c5!important;border-color:#865cf0!important}
+.semester-route-help{font-size:14px;color:#64748b;font-weight:700;line-height:1.45;max-width:820px}.semester-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:1rem}.semester-tab{border:1.5px solid #cbd5e1;background:#fff;color:#475569;border-radius:var(--radius-sm);padding:10px 12px;text-align:left;font-weight:800}.semester-tab.on{background:#eeeeff;border-color:#5454e9;color:#3434b7;box-shadow:var(--shadow)}.semester-tab small{display:block;font-size:11px;font-weight:800;color:#94a3b8;margin-top:2px}.semester-workspace{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:var(--radius);padding:1rem;margin-top:1rem}.semester-work-head{display:grid;grid-template-columns:minmax(0,1fr) 150px 130px auto;gap:8px;align-items:end}.selected-course-chips,.pensum-picker-grid{display:flex;flex-wrap:wrap;gap:8px}.selected-course-chip,.pensum-pick-chip{border:1.5px solid #e2e8f0;border-radius:var(--radius-sm);background:#fff;padding:9px 12px;font-size:14px;font-weight:800;color:#334155;cursor:pointer;display:flex;align-items:center;gap:8px}.pensum-pick-chip.sel{background:#e8f8ef;border-color:#4cb979;color:#1d6f43}.pensum-pick-chip.shared{background:#fbfdd8;color:#5d5f00;border-color:#e4eb60}.semester-picker-details{margin-top:1rem}.semester-picker-summary{list-style:none;display:inline-flex;align-items:center;gap:8px;border:1.5px solid #cbd5e1;background:#fff;color:#475569;border-radius:var(--radius-sm);padding:9px 14px;font-size:14px;font-weight:800;cursor:pointer}.semester-picker-summary::-webkit-details-marker{display:none}.semester-picker-details[open] .semester-picker-summary{background:#eeeeff;border-color:#5454e9;color:#3434b7}.semester-picker-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:1rem 0 .75rem}.semester-section-title{font-size:12px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin:1rem 0 .55rem}.pensum-semester-group{background:#fff;border:1.5px solid #e2e8f0;border-radius:var(--radius);padding:1rem;margin-top:.8rem}.pensum-semester-title{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:.65rem;display:flex;justify-content:space-between}.semester-grade-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:.75rem}.semester-empty{background:#fff;border:1.5px dashed #cbd5e1;border-radius:var(--radius-sm);padding:1rem;color:#94a3b8;font-size:14px;font-weight:700}.semester-summary,.semester-quick-actions,.semester-picker-footer{display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem}.semester-picker-footer{justify-content:flex-end}.hom-editor-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1rem}.hom-editor-item{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:var(--radius);padding:1rem}.hom-editor-grid{display:grid;grid-template-columns:1fr 1.2fr .8fr 1.2fr auto;gap:8px;align-items:end}@media(max-width:900px){.nav-inner{height:auto;min-height:68px;padding:12px 0 10px}.brand-divider,.brand-product,.brand-app-tagline{display:none}.timeline{grid-template-columns:repeat(5,minmax(0,1fr))!important}.semester-work-head,.hom-editor-grid{grid-template-columns:1fr}.semester-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tree-wrap{height:740px}}
+
+
+
+/* Restore Mapa de prerrequisitos: misma distribución de la versión v4 enviada */
+.tree-wrap{height:820px!important;border-radius:18px!important;background:#fff!important;overflow:auto!important;}
+#skill-canvas{position:relative!important;min-width:2260px!important;min-height:900px!important;}
+.sem-map-label{position:absolute!important;top:18px!important;width:170px!important;text-align:center!important;font-size:12px!important;font-weight:800!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#88898c!important;pointer-events:none!important;}
+.node{width:170px!important;min-width:170px!important;max-width:170px!important;height:98px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;justify-content:center!important;border-radius:10px!important;padding:10px 12px!important;font-size:13px!important;font-weight:500!important;line-height:1.28!important;box-shadow:0 4px 16px rgba(0,0,0,.06)!important;text-align:center!important;}
+.node:hover{transform:scale(1.03)!important;z-index:10!important;}
+.node-title{font-weight:600!important;margin-bottom:5px!important;display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important;}
+.node-badges{display:flex!important;gap:4px!important;flex-wrap:wrap!important;justify-content:center!important;flex-shrink:0!important;}
+.node-badge{font-size:10px!important;font-weight:700!important;line-height:1!important;padding:3px 7px!important;border-radius:999px!important;background:rgba(255,255,255,.82)!important;border:1px solid rgba(148,163,184,.35)!important;white-space:nowrap!important;}
+.node-done{background:#e8f8ef!important;color:#1d6f43!important;border-color:#4cb979!important;}
+.node-avail{background:#eeeeff!important;color:#3434b7!important;border-color:#5454e9!important;}
+.node-quf{background:#f1ecff!important;color:#5a36c5!important;border-color:#865cf0!important;}
+.node-shared{background:#fbfdd8!important;color:#5d5f00!important;border-color:#e4eb60!important;}
+.node-blocked{background:#f3f4f6!important;color:#88898c!important;border-color:#cecfd4!important;box-shadow:0 4px 16px rgba(0,0,0,.04)!important;}
+.node-selected{outline:3px solid rgba(84,84,233,.22)!important;z-index:20!important;}
+.node-dim{opacity:.38!important;filter:saturate(.8)!important;}
+.node-focus{opacity:1!important;filter:none!important;}
+.map-detail-overlay{position:fixed!important;right:28px!important;top:86px!important;width:min(410px,calc(100vw - 36px))!important;max-height:calc(100vh - 110px)!important;overflow:auto!important;background:#fff!important;border:1.5px solid #e2e8f0!important;border-radius:18px!important;box-shadow:0 12px 32px rgba(84,84,233,.12)!important;z-index:600!important;padding:1.25rem!important;display:none;}
+.map-detail-overlay.on{display:block!important;}
+.map-detail-head{display:flex!important;justify-content:space-between!important;gap:12px!important;align-items:flex-start!important;margin-bottom:.75rem!important;}
+.map-detail-title{font-size:21px!important;font-weight:800!important;line-height:1.2!important;color:#111827!important;}
+.map-detail-close{border:none!important;background:#f1f5f9!important;color:#475569!important;border-radius:10px!important;width:32px!important;height:32px!important;font-weight:800!important;font-size:18px!important;}
+svg.edges path.edge-focus{opacity:.9!important;stroke-width:2.7!important;}
+@media(max-width:900px){.tree-wrap{height:740px!important}.map-detail-overlay{left:14px!important;right:14px!important;top:78px!important;width:auto!important}}
+
+
+
+/* Cloud users + GitHub Pages mode */
+.auth-box{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap}
+.auth-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #d7d9e2;background:#fff;color:#545967;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.auth-pill.ok{background:#e8f8ef;color:#1d6f43;border-color:#4cb979}.auth-pill.admin{background:#eeeeff;color:#3434b7;border-color:#5454e9}.auth-pill.warn{background:#fff3ec;color:#b7431e;border-color:#e9683b}
+.auth-btn{border:1px solid #d7d9e2;background:#fff;color:#545967;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}
+.auth-btn:hover{background:#f4f5ff;color:#5454e9}.auth-btn.primary{background:#5454e9;color:#fff;border-color:#5454e9}.auth-btn.danger{background:#fff3ec;color:#b7431e;border-color:#e9683b}
+.cloud-banner{border:1.5px solid #d7d9e2;background:#fff;border-radius:14px;padding:.85rem 1rem;margin-bottom:1rem;font-size:14px;font-weight:700;color:#545967;display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.cloud-banner strong{color:#111827}.cloud-banner.warn{background:#fff3ec;border-color:#e9683b;color:#b7431e}.cloud-banner.ok{background:#e8f8ef;border-color:#4cb979;color:#1d6f43}
+@media(max-width:900px){.auth-box{width:100%;order:4;justify-content:flex-start}.auth-pill,.auth-btn{font-size:11px;padding:5px 8px}}
+
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand"><span class="brand-word">icesi</span><span class="brand-divider"></span><span class="brand-product">Academic Map</span></div>
+    <div class="nav-tabs">
+      <button type="button" class="ntab on" onclick="nav('dash',this)">Dashboard</button>
+      <button type="button" class="ntab" onclick="nav('pensum',this)">Pensum</button>
+      <button type="button" class="ntab" onclick="nav('tree',this)">Mapa</button>
+      <button type="button" class="ntab" onclick="nav('planner',this)">Planificador</button>
+      <button type="button" class="ntab" onclick="nav('sched',this)">Horarios</button>
+      <button type="button" class="ntab admin-only" onclick="nav('editor',this)" style="display:none">Editor</button>
+    </div>
+    <div class="nav-mode">
+      <button type="button" class="mode-btn on" onclick="setMode('student',this)">Estudiante</button>
+      <button type="button" class="mode-btn" onclick="setMode('admin',this)">Admin</button>
+    </div>
+    <div class="brand-app-tagline" aria-label="Llega más lejos"></div>
+    <div id="auth-box" class="auth-box" aria-live="polite"></div>
+    <div class="nav-pills" style="margin-left:.5rem">
+      <span class="npill npill-ibq" id="np-ibq">IBQ 0/168</span>
+      <span class="npill npill-quf" id="np-quf">QUF 0/180</span>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="view on" id="view-dash">
+  <div class="section-title">Dashboard académico</div>
+  <div class="stat-row" id="stat-row"></div>
+  <div class="dash-grid">
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="card">
+        <div class="hello">Hola, <span>Juan Pablo Huertas</span> 👋</div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Ing. Bioquímica</span><span id="prog-ibq-txt">0/168 cr.</span></div>
+          <div class="prog-bar"><div class="prog-fill pf-ibq" id="prog-ibq" style="width:0%"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Quím. Farmacéutica</span><span id="prog-quf-txt">0/180 cr.</span></div>
+          <div class="prog-bar"><div class="prog-fill pf-quf" id="prog-quf" style="width:0%"></div></div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="card-title">Línea de tiempo semestral</div>
+          <div class="timeline" id="tl-row"></div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Riesgo académico</div>
+        <div id="risk-section"></div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">🏆 Logros</div>
+        <div class="badges" id="badges-container"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div class="card-title" style="margin:0">✨ Próximo semestre sugerido</div>
+          <button type="button" class="btn-primary" onclick="nav('planner',document.querySelectorAll('.ntab')[3])">Planificar</button>
+        </div>
+        <div id="next-sem-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔓 Materias disponibles ahora</div>
+        <div id="avail-now"></div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">⚠️ Materias cuello de botella</div>
+        <div id="bottleneck-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PENSUM ═══ -->
+<div class="view" id="view-pensum">
+  <div class="section-title">Pensum completo</div>
+  <div class="filter-row" id="pen-filter-row">
+    <button type="button" class="fb on" onclick="setPenFilter('all',this)">Todas</button>
+    <button type="button" class="fb" onclick="setPenFilter('ibq',this)">🔵 IBQ</button>
+    <button type="button" class="fb" onclick="setPenFilter('quf',this)">🟢 QUF</button>
+    <button type="button" class="fb" onclick="setPenFilter('done',this)">✅ Cursadas</button>
+    <button type="button" class="fb" onclick="setPenFilter('avail',this)">🔓 Disponibles</button>
+    <button type="button" class="fb" onclick="setPenFilter('blocked',this)">🔒 Bloqueadas</button>
+  </div>
+  <div class="pen-cols">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="pen-col-head"><h3 style="color:var(--ibq-d)">🔵 Ingeniería Bioquímica</h3><span>168 créditos</span></div>
+      <div id="col-ibq"></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="pen-col-head"><h3 style="color:var(--quf-d)">🟢 Química Farmacéutica</h3><span>180 créditos</span></div>
+      <div id="col-quf"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SKILL TREE ═══ -->
+<div class="view" id="view-tree">
+  <div class="section-title">Mapa de prerrequisitos</div>
+  <div class="tree-legend">
+    <div class="tl-item"><div class="tl-dot2" style="background:var(--done-c)"></div>✅ Cursada</div>
+    <div class="tl-item"><div class="tl-dot2" style="background:var(--ibq)"></div>🔵 Disponible IBQ</div>
+    <div class="tl-item"><div class="tl-dot2" style="background:var(--quf)"></div>🟢 Disponible QUF</div>
+    <div class="tl-item"><div class="tl-dot2" style="background:var(--blocked-c)"></div>🔒 Bloqueada</div>
+  </div>
+  <div class="tree-filter" id="tree-filter-row">
+    <button type="button" class="tf-btn on" onclick="setTreeFilter('all',this)">Toda la cadena</button>
+    <button type="button" class="tf-btn" onclick="setTreeFilter('ibq',this)">IBQ</button>
+    <button type="button" class="tf-btn" onclick="setTreeFilter('quf',this)">QUF</button>
+  </div>
+  <div class="tree-wrap"><div id="skill-canvas"><svg class="edges" id="edge-svg"></svg></div></div>
+  <div style="margin-top:.5rem;font-size:14px;color:#94a3b8;font-weight:600">Haz clic en un nodo para ver info. Usa el Pensum para marcar materias como cursadas.</div>
+</div>
+
+<!-- ═══ PLANNER ═══ -->
+<div class="view" id="view-planner">
+  <div class="section-title">Planificador semestral</div>
+  <div class="plan-layout" style="grid-template-columns:1fr">
+    <div>
+      <div class="card card-sm" style="margin-bottom:1rem">
+        <div class="card-title">Progreso</div>
+        <div class="prog-wrap"><div class="prog-label"><span>IBQ</span><span id="pl-ibq-txt">0/168</span></div><div class="prog-bar"><div class="prog-fill pf-ibq" id="pl-ibq" style="width:0%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-label"><span>QUF</span><span id="pl-quf-txt">0/180</span></div><div class="prog-bar"><div class="prog-fill pf-quf" id="pl-quf" style="width:0%"></div></div></div>
+      </div>
+      <div class="card semester-route-card" style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+          <div>
+            <div class="card-title" style="margin-bottom:.35rem">Ruta semestre a semestre</div>
+            <div class="semester-route-help">Selecciona cada semestre, abre “Seleccionar desde el pensum” y marca las materias vistas o planeadas. El selector se cierra para reducir ruido visual y el semestre actual del Dashboard se calcula desde los semestres marcados como cursados.</div>
+          </div>
+          <button type="button" class="btn-primary" onclick="addSemesterPlan()">+ Agregar semestre</button>
+        </div>
+        <div id="semester-route-list"></div>
+      </div>
+      <div class="card">
+        <div class="scheduler-layout-top">
+          <div><div class="card-title" style="margin-bottom:.5rem">Filtros del planificador</div><div class="planner-filters" id="pl-filter-car"></div><div class="planner-filters" id="pl-filter-est"></div></div>
+          <div style="min-width:240px"><div class="card-title" style="margin-bottom:.5rem">Semestre base</div><div class="sem-pills" id="sem-pills-row"></div></div>
+        </div>
+        <div id="suggest-list" style="margin-bottom:.75rem"></div>
+      </div>
+      <div class="planner-board" style="margin-top:1rem">
+        <div><div id="planner-grid"></div></div>
+        <aside class="planner-cart"><div class="card card-sm"><div class="card-title">🛒 Semestre en construcción</div><div id="planner-cart-summary"></div><div id="planner-cart-list" class="cart-list"></div><div style="display:flex;gap:8px;margin-top:.85rem"><button type="button" class="btn-primary" style="flex:1;justify-content:center" onclick="autoSuggest()">✨ Sugerir</button><button type="button" class="btn-secondary" style="flex:1" onclick="clearPlannerCart()">Vaciar</button></div></div></aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCHEDULER ═══ -->
+<div class="view" id="view-sched">
+  <div class="section-title">⏰ Constructor de horarios</div>
+  <div class="sched-layout" style="grid-template-columns:360px 1fr">
+    <div>
+      <div class="card" style="padding:1rem;overflow:hidden">
+        <div class="card-title" style="margin-bottom:.5rem">Materias con oferta precargada</div>
+        <div class="sched-help" style="margin-bottom:.75rem">La lista está organizada por carrera y semestre. Puedes filtrar materias disponibles, bloqueadas o ya cursadas; y, si la materia tiene laboratorio, matricular teoría y laboratorio como componentes separados.</div>
+        <div class="sched-filters" id="sched-filter-car"></div>
+        <div class="sched-filters" id="sched-filter-est"></div>
+        <div class="sem-pills" id="sched-sem-pills"></div>
+        <div class="mat-picker" id="mat-picker"></div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title">Opciones de la materia seleccionada</div>
+        <div id="slot-form" style="display:none"><div style="font-size:20px;font-weight:900;color:#1e293b;margin-bottom:4px" id="slot-form-name"></div><div id="slot-form-meta" class="sched-help" style="margin-bottom:.75rem"></div><div id="section-picker" class="section-list"></div><div id="slot-form-empty" class="sched-empty" style="display:none;margin-top:.75rem"></div></div>
+        <div id="slot-form-placeholder" class="sched-empty">Selecciona una materia para ver grupos, horarios, salón, teoría y laboratorio.</div>
+      </div>
+    </div>
+    <div>
+      <div id="conflict-banner" style="display:none" class="conflict-banner">⚠️ <span id="conflict-text"></span></div>
+      <div class="sched-meta" id="sched-meta"></div>
+      <div class="sched-toolbar"><button type="button" class="btn-primary" onclick="organizeSchedule()">🧹 Ordenar horario</button><button type="button" class="btn-secondary" onclick="clearSchedule()">🗑️ Limpiar todo</button></div>
+      <div class="cal-wrap"><div class="cal-grid" id="cal-grid"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EDITOR ═══ --><!-- ═══ EDITOR ═══ -->
+<div class="view" id="view-editor">
+  <div class="section-title">Editor de Pensum <span style="font-size:16px;background:var(--warn);color:#fff;padding:3px 12px;border-radius:20px;font-weight:700;margin-left:8px">Admin</span></div>
+  <div class="import-export">
+    <button type="button" class="btn-primary" onclick="exportPensum()">📤 Exportar JSON</button>
+    <button type="button" class="btn-secondary" onclick="document.getElementById('import-input').click()">📥 Importar JSON</button>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importPensum(event)">
+    <button type="button" class="btn-secondary" onclick="resetPensum()">↩️ Restaurar original</button>
+  </div>
+  <div id="editor-error" style="display:none"></div>
+  <div id="editor-success" style="display:none"></div>
+  <div class="card card-sm" style="margin-bottom:1.25rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div>
+        <div class="card-title" style="margin-bottom:.35rem">Reglas de homologación editables</div>
+        <div style="font-size:14px;color:#64748b;font-weight:700">Solo las materias QUF homologables aparecen como destino. Selecciona equivalencias sin escribir IDs.</div>
+      </div>
+      <button type="button" class="btn-primary" onclick="addHomRule()">+ Nueva homologación</button>
+    </div>
+    <div id="hom-editor-list" class="hom-editor-list"></div>
+  </div>
+  <div class="editor-layout">
+    <!-- Materia list -->
+    <div>
+      <div class="card" style="padding:1rem;height:fit-content">
+        <div class="card-title">Materias</div>
+        <div style="display:flex;gap:6px;margin-bottom:.75rem">
+          <button type="button" class="btn-primary" style="flex:1;justify-content:center;font-size:13px" onclick="startNewMat()">+ Nueva</button>
+          <select id="ed-car-filter" style="flex:1;padding:6px 8px;border-radius:var(--radius-sm);border:1.5px solid #cbd5e1;font-size:13px;font-weight:700" onchange="renderEditorList()">
+            <option value="all">Todas</option>
+            <option value="ibq">IBQ</option>
+            <option value="quf">QUF</option>
+          </select>
+        </div>
+        <input class="mat-edit-search" placeholder="🔍 Buscar materia..." oninput="renderEditorList()" id="ed-search">
+        <div class="mat-edit-list" id="mat-edit-list"></div>
+      </div>
+    </div>
+    <!-- Editor form -->
+    <div>
+      <div id="editor-form-wrap">
+        <div class="editor-form">
+          <div style="text-align:center;padding:3rem;color:#94a3b8;font-size:16px;font-weight:600">← Selecciona una materia para editar o crea una nueva</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_IBQ=[
+  {sem:1,m:[{id:'ibq_alg1',n:'Álgebra y funciones',c:4,cat:'basica'},{id:'ibq_qg1',n:'Química general y Lab.',c:4,cat:'basica'},{id:'ibq_iibq',n:'Intro. a la Ing. Bioquímica',c:2,cat:'pro'},{id:'ibq_log',n:'Lógica y argumentación',c:3,cat:'basica'},{id:'ibq_ce1',n:'Comunicación escrita I',c:3,cat:'elec'}]},
+  {sem:2,m:[{id:'ibq_all',n:'Álgebra lineal',c:3,cat:'basica'},{id:'ibq_qo1',n:'Química orgánica I y Lab.',c:4,cat:'basica'},{id:'ibq_cal1',n:'Cálculo una variable',c:4,cat:'basica'},{id:'ibq_bcl',n:'Biología celular y Lab.',c:4,cat:'basica'},{id:'ibq_org',n:'Organizaciones',c:2,cat:'elec'}]},
+  {sem:3,m:[{id:'ibq_calv',n:'Cálculo varias variables',c:4,cat:'basica'},{id:'ibq_bqm',n:'Bioquímica y Lab.',c:4,cat:'basica'},{id:'ibq_fis',n:'Física para IBQ',c:4,cat:'basica'},{id:'ibq_fisq',n:'Fundamentos de fisicoquímica',c:3,cat:'ing'},{id:'ibq_ce2',n:'Comunicación oral-escrita II',c:3,cat:'elec'}]},
+  {sem:4,m:[{id:'ibq_eqdif',n:'Ecuaciones diferenciales',c:3,cat:'basica'},{id:'ibq_algo',n:'Pensamiento algorítmico',c:3,cat:'ing'},{id:'ibq_bme',n:'Balances de materia y energía',c:4,cat:'ing'},{id:'ibq_biom',n:'Biología molecular',c:4,cat:'pro'},{id:'ibq_eh1',n:'Electiva humanidades I',c:3,cat:'elec'}]},
+  {sem:5,m:[{id:'ibq_bioe',n:'Bioestadística',c:3,cat:'basica'},{id:'ibq_mic',n:'Microbiología industrial y Lab.',c:4,cat:'pro'},{id:'ibq_term1',n:'Termodinámica I',c:3,cat:'ing'},{id:'ibq_bioc',n:'Biocatálisis y Lab.',c:4,cat:'pro'},{id:'ibq_eco',n:'Principios de economía',c:3,cat:'elec'}]},
+  {sem:6,m:[{id:'ibq_bioreac',n:'Diseño de biorreactores',c:4,cat:'pro'},{id:'ibq_ft1',n:'Fenómenos de transporte I',c:4,cat:'ing'},{id:'ibq_term2',n:'Termodinámica II',c:4,cat:'ing'},{id:'ibq_inge',n:'Ingeniería económica',c:4,cat:'elec'},{id:'ibq_cts',n:'Electiva CTS',c:2,cat:'elec'}]},
+  {sem:7,m:[{id:'ibq_ferm',n:'Tecnologías de fermentación',c:4,cat:'pro'},{id:'ibq_modp',n:'Modelos predictivos',c:4,cat:'ing'},{id:'ibq_ft2',n:'Fenómenos de transporte II',c:4,cat:'ing'},{id:'ibq_crea',n:'Creatividad empresarial',c:4,cat:'elec'},{id:'ibq_eh2',n:'Electiva humanidades II',c:3,cat:'elec'}]},
+  {sem:8,m:[{id:'ibq_pg1',n:'Proyecto de grado I',c:2,cat:'pro'},{id:'ibq_biop',n:'Diseño de bioprocesos',c:3,cat:'pro'},{id:'ibq_sep',n:'Procesos de separación y Lab.',c:4,cat:'ing'},{id:'ibq_pe1',n:'Profesional electiva I',c:3,cat:'elec'},{id:'ibq_ger',n:'Gerencia de proyectos',c:3,cat:'elec'},{id:'ibq_der',n:'Fund. Derecho Constitucional',c:3,cat:'elec'}]},
+  {sem:9,m:[{id:'ibq_pg2',n:'Proyecto de grado II',c:3,cat:'pro'},{id:'ibq_labbq',n:'Lab. Bioquímica industrial',c:4,cat:'pro'},{id:'ibq_pe2',n:'Profesional electiva II',c:3,cat:'elec'},{id:'ibq_lid',n:'Liderazgo',c:3,cat:'elec'},{id:'ibq_eh3',n:'Electiva humanidades III',c:3,cat:'elec'}]},
+  {sem:10,m:[{id:'ibq_prac',n:'Práctica empresarial',c:10,cat:'pro'},{id:'ibq_eti',n:'Electiva en ética',c:2,cat:'elec'}]}
+];
+const DEFAULT_QUF=[
+  {sem:1,m:[{id:'quf_qg1',n:'Química general I y Lab.',c:4,cat:'basica'},{id:'quf_log',n:'Lógica y argumentación',c:3,cat:'basica'},{id:'quf_alg1',n:'Álgebra y funciones',c:4,cat:'basica'},{id:'quf_ce1',n:'Comunicación escrita I',c:3,cat:'elec'},{id:'quf_bio',n:'Biología general y Lab.',c:4,cat:'basica'}]},
+  {sem:2,m:[{id:'quf_qg2',n:'Química general II y Lab.',c:4,cat:'basica'},{id:'quf_cal1',n:'Cálculo una variable',c:4,cat:'basica'},{id:'quf_icf',n:'Intro. Ciencias Farmacéuticas',c:1,cat:'pro'},{id:'quf_qo1',n:'Química orgánica I y Lab.',c:4,cat:'basica'},{id:'quf_ce2',n:'Comunicación oral-escrita II',c:3,cat:'elec'},{id:'quf_org',n:'Organizaciones',c:2,cat:'elec'}]},
+  {sem:3,m:[{id:'quf_eco',n:'Principios de economía',c:3,cat:'elec'},{id:'quf_calv',n:'Cálculo CN',c:4,cat:'basica'},{id:'quf_fis',n:'Física y Lab.',c:4,cat:'basica'},{id:'quf_bqm',n:'Bioquímica y Lab.',c:4,cat:'basica'},{id:'quf_anq',n:'Análisis químico y Lab.',c:4,cat:'pro'}]},
+  {sem:4,m:[{id:'quf_lid',n:'Liderazgo',c:3,cat:'elec'},{id:'quf_bioe',n:'Bioestadística',c:3,cat:'basica'},{id:'quf_der',n:'Fund. Derecho Constitucional',c:3,cat:'elec'},{id:'quf_fisq1',n:'Fisicoquímica I y Lab.',c:4,cat:'ing'},{id:'quf_bcl',n:'Biología celular',c:4,cat:'basica'},{id:'quf_qo2',n:'Química orgánica II y Lab.',c:4,cat:'basica'}]},
+  {sem:5,m:[{id:'quf_doe',n:'Diseño de experimentos',c:3,cat:'ing'},{id:'quf_mic',n:'Microbiología y Lab.',c:4,cat:'pro'},{id:'quf_anato',n:'Anatomía y fisiología humana',c:4,cat:'pro'},{id:'quf_fisq2',n:'Fisicoquímica II y Lab.',c:4,cat:'ing'},{id:'quf_aninst',n:'Análisis instrumental y Lab.',c:4,cat:'pro'},{id:'quf_salud',n:'Salud pública y administración',c:2,cat:'elec'}]},
+  {sem:6,m:[{id:'quf_biom',n:'Biología molecular',c:4,cat:'pro'},{id:'quf_farmt1',n:'Farmacotecnia I y Lab.',c:4,cat:'pro'},{id:'quf_farmcog',n:'Farmacognosia y fitoquímica',c:4,cat:'pro'},{id:'quf_farm1',n:'Farmacología I',c:3,cat:'pro'},{id:'quf_biofc',n:'Biofarmacia y farmacocinética',c:3,cat:'pro'},{id:'quf_eti',n:'Electiva en ética',c:2,cat:'elec'}]},
+  {sem:7,m:[{id:'quf_biote',n:'Biotecnología y Lab.',c:4,cat:'pro'},{id:'quf_farmt2',n:'Farmacotecnia II y Lab.',c:4,cat:'pro'},{id:'quf_ctrl',n:'Control fisicoquímico y microbiol.',c:4,cat:'pro'},{id:'quf_farmas',n:'Farmacia asistencial',c:4,cat:'pro'},{id:'quf_farm2',n:'Farmacología II',c:3,cat:'pro'},{id:'quf_cts',n:'Electiva CTS',c:2,cat:'elec'}]},
+  {sem:8,m:[{id:'quf_eh1',n:'Electiva humanidades I',c:3,cat:'elec'},{id:'quf_farmcl',n:'Farmacia clínica',c:4,cat:'pro'},{id:'quf_farmin',n:'Farmacia industrial y Lab.',c:4,cat:'pro'},{id:'quf_pg1',n:'Proyecto de grado I',c:2,cat:'pro'},{id:'quf_pe1',n:'Profesional electiva I',c:3,cat:'elec'},{id:'quf_asunto',n:'Asuntos regulatorios',c:2,cat:'pro'}]},
+  {sem:9,m:[{id:'quf_eh2',n:'Electiva humanidades II',c:3,cat:'elec'},{id:'quf_eh3',n:'Electiva humanidades III',c:3,cat:'elec'},{id:'quf_pg2',n:'Proyecto de grado II',c:2,cat:'pro'},{id:'quf_pe2',n:'Profesional electiva II',c:3,cat:'elec'},{id:'quf_pe3',n:'Profesional electiva III',c:3,cat:'elec'}]},
+  {sem:10,m:[{id:'quf_prac',n:'Semestre de práctica',c:10,cat:'pro'}]}
+];
+const DEFAULT_PREREQS={
+  'ibq_all':['ibq_alg1'],'ibq_qo1':['ibq_qg1'],'ibq_cal1':['ibq_alg1'],'ibq_bcl':['ibq_qg1'],
+  'ibq_calv':['ibq_cal1'],'ibq_bqm':['ibq_bcl'],'ibq_fis':['ibq_cal1'],'ibq_fisq':['ibq_qo1','ibq_cal1'],'ibq_ce2':['ibq_ce1'],
+  'ibq_eqdif':['ibq_calv'],'ibq_bme':['ibq_calv','ibq_fisq'],'ibq_biom':['ibq_bqm'],'ibq_algo':['ibq_cal1'],
+  'ibq_bioe':['ibq_cal1'],'ibq_mic':['ibq_bqm'],'ibq_term1':['ibq_fisq','ibq_bme'],'ibq_bioc':['ibq_bqm','ibq_qo1'],
+  'ibq_bioreac':['ibq_bme','ibq_mic'],'ibq_ft1':['ibq_term1','ibq_eqdif'],'ibq_term2':['ibq_term1'],'ibq_inge':['ibq_eco'],
+  'ibq_ferm':['ibq_bioreac','ibq_bioc'],'ibq_modp':['ibq_bioe','ibq_eqdif'],'ibq_ft2':['ibq_ft1'],
+  'ibq_pg1':['ibq_biom','ibq_bioc'],'ibq_biop':['ibq_bioreac','ibq_ft1'],'ibq_sep':['ibq_ft1'],
+  'ibq_pg2':['ibq_pg1'],'ibq_labbq':['ibq_biop','ibq_ferm'],'ibq_prac':['ibq_pg2'],
+  'quf_qg2':['quf_qg1'],'quf_cal1':['quf_alg1'],'quf_qo1':['quf_qg1'],'quf_ce2':['quf_ce1'],
+  'quf_calv':['quf_cal1'],'quf_fis':['quf_cal1'],'quf_bqm':['quf_qg2','quf_qo1'],'quf_anq':['quf_qg2'],
+  'quf_bioe':['quf_cal1'],'quf_fisq1':['quf_qg2','quf_calv'],'quf_bcl':['quf_bqm'],'quf_qo2':['quf_qo1'],
+  'quf_doe':['quf_bioe'],'quf_mic':['quf_bqm'],'quf_anato':['quf_bqm'],'quf_fisq2':['quf_fisq1'],'quf_aninst':['quf_anq','quf_fisq1'],
+  'quf_biom':['quf_bqm','quf_bcl'],'quf_farmt1':['quf_qo2','quf_fisq1'],'quf_farmcog':['quf_qo2','quf_bqm'],
+  'quf_farm1':['quf_anato','quf_bqm'],'quf_biofc':['quf_farmt1','quf_fisq2'],
+  'quf_biote':['quf_biom','quf_mic'],'quf_farmt2':['quf_farmt1'],'quf_ctrl':['quf_farmt1','quf_mic'],
+  'quf_farmas':['quf_farm1','quf_biofc'],'quf_farm2':['quf_farm1'],
+  'quf_farmcl':['quf_farmas','quf_farm2'],'quf_farmin':['quf_farmt2','quf_ctrl'],
+  'quf_pg1':['quf_biom','quf_farmt1'],'quf_asunto':['quf_farmin'],
+  'quf_pg2':['quf_pg1'],'quf_prac':['quf_pg2']
+};
+const SHARED={'quf_log':'ibq_log','quf_alg1':'ibq_alg1','quf_ce1':'ibq_ce1','quf_cal1':'ibq_cal1','quf_org':'ibq_org','quf_bqm':'ibq_bqm','quf_eco':'ibq_eco','quf_bioe':'ibq_bioe','quf_biom':'ibq_biom','quf_der':'ibq_der','quf_lid':'ibq_lid','quf_eti':'ibq_eti','quf_cts':'ibq_cts'};
+const BOTTLENECKS=['ibq_bqm','ibq_fisq','ibq_qo1','ibq_cal1','ibq_term1','quf_bqm','quf_fisq1','quf_qo1'];
+const CAT_INFO={basica:{label:'Básica',color:'#2563eb',bg:'#dbeafe'},ing:{label:'Ingeniería',color:'#16a34a',bg:'#dcfce7'},pro:{label:'Profesional',color:'#7c3aed',bg:'#ede9fe'},elec:{label:'Electiva',color:'#ea580c',bg:'#fff7ed'}};
+const TREE_LAYOUT={'ibq_qg1':{x:20,y:20},'ibq_qo1':{x:20,y:95},'ibq_fisq':{x:20,y:170},'ibq_bme':{x:20,y:245},'ibq_term1':{x:20,y:320},'ibq_term2':{x:20,y:395},'ibq_alg1':{x:155,y:20},'ibq_cal1':{x:155,y:95},'ibq_calv':{x:155,y:170},'ibq_eqdif':{x:155,y:245},'ibq_ft1':{x:155,y:320},'ibq_ft2':{x:155,y:395},'ibq_bcl':{x:290,y:20},'ibq_bqm':{x:290,y:95},'ibq_biom':{x:290,y:170},'ibq_mic':{x:290,y:245},'ibq_bioreac':{x:290,y:320},'ibq_ferm':{x:290,y:395},'ibq_bioc':{x:425,y:170},'ibq_bioe':{x:425,y:245},'ibq_modp':{x:425,y:320},'ibq_biop':{x:425,y:395},'ibq_labbq':{x:425,y:470},'ibq_pg1':{x:560,y:245},'ibq_pg2':{x:560,y:320},'ibq_prac':{x:560,y:395},'ibq_sep':{x:695,y:320},'ibq_inge':{x:695,y:170},'ibq_eco':{x:695,y:95},'ibq_ger':{x:695,y:245},'quf_qg1':{x:20,y:20},'quf_qg2':{x:20,y:95},'quf_qo1':{x:20,y:170},'quf_qo2':{x:20,y:245},'quf_farmt1':{x:20,y:320},'quf_farmt2':{x:20,y:395},'quf_ctrl':{x:20,y:470},'quf_alg1':{x:155,y:20},'quf_cal1':{x:155,y:95},'quf_calv':{x:155,y:170},'quf_fisq1':{x:155,y:245},'quf_fisq2':{x:155,y:320},'quf_biofc':{x:155,y:395},'quf_bio':{x:290,y:20},'quf_bqm':{x:290,y:95},'quf_bcl':{x:290,y:170},'quf_biom':{x:290,y:245},'quf_biote':{x:290,y:320},'quf_anq':{x:425,y:95},'quf_aninst':{x:425,y:170},'quf_anato':{x:425,y:245},'quf_farm1':{x:425,y:320},'quf_farm2':{x:425,y:395},'quf_farmas':{x:425,y:470},'quf_mic':{x:560,y:245},'quf_farmcog':{x:560,y:320},'quf_farmcl':{x:560,y:395},'quf_pg1':{x:695,y:245},'quf_pg2':{x:695,y:320},'quf_prac':{x:695,y:395},'quf_farmin':{x:695,y:170}};
+
+const DEFAULT_SCHEDULES={"ibq_bme":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":1,"start":"14:00","end":"16:29","room":"209C","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"209C","type":"TEO"},{"day":5,"start":"14:00","end":"15:59","room":"305L","type":"TEO"}]}],"ibq_biom":[{"group":"001","teacher":"Juliana Andrea Cabrera Perdomo","method":"PR","slots":[{"day":3,"start":"11:00","end":"12:59","room":"105D","type":"TEO"},{"day":5,"start":"11:00","end":"12:59","room":"105D","type":"TEO"}]},{"group":"003","teacher":"Gloria Isabel Giraldo Calderon","method":"PR","slots":[{"day":3,"start":"11:00","end":"12:59","room":"106D","type":"TEO"},{"day":5,"start":"11:00","end":"12:59","room":"106D","type":"TEO"}]}],"ibq_eqdif":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"204E","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"204E","type":"TEO"}]}],"ibq_algo":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":1,"start":"07:00","end":"08:59","room":"206D","type":"TEO"},{"day":3,"start":"07:00","end":"08:29","room":"206D","type":"TEO"},{"day":5,"start":"07:00","end":"08:59","room":"202C","type":"TEO"}]}],"ibq_bioe":[{"group":"001","teacher":"Daniel Felipe Osorio Holguin","method":"PR","slots":[{"day":1,"start":"14:00","end":"16:29","room":"402E","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"402E","type":"TEO"}]},{"group":"003","teacher":"Daniel Felipe Osorio Holguin","method":"PR","slots":[{"day":3,"start":"07:00","end":"08:59","room":"502E","type":"TEO"},{"day":5,"start":"07:00","end":"08:59","room":"502E","type":"TEO"}]}],"ibq_mic":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":3,"start":"10:00","end":"12:59","room":"306E","type":"TEO"},{"day":4,"start":"16:00","end":"18:59","room":"101L","type":"LAB"}]}],"ibq_term1":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"07:00","end":"08:59","room":"201D","type":"TEO"},{"day":4,"start":"07:00","end":"08:59","room":"201D","type":"TEO"}]}],"ibq_bioc":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"403E","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"403E","type":"TEO"},{"day":5,"start":"14:00","end":"16:59","room":"113N","type":"LAB"}]}],"ibq_eco":[{"group":"001","teacher":"Johan Sebastian Loaiza Ipuz","method":"PR","slots":[{"day":5,"start":"07:00","end":"09:59","room":"209D","type":"TEO"}]},{"group":"003","teacher":"Profesor por asignar","method":"PR","slots":[{"day":3,"start":"18:30","end":"21:29","room":"202E","type":"TEO"}]},{"group":"005","teacher":"Esteban David Delgado Eraso","method":"PR","slots":[{"day":5,"start":"14:00","end":"16:59","room":"103D","type":"TEO"}]},{"group":"007","teacher":"Franklin Emerson Maiguashca Guevara","method":"VR/S","slots":[{"day":1,"start":"09:00","end":"12:59","room":"ZOOM","type":"TEO"}]},{"group":"013","teacher":"Jefferson Muñoz Vargas","method":"PR","slots":[{"day":1,"start":"14:00","end":"17:59","room":"108D","type":"TEO"}]},{"group":"021","teacher":"Esteban David Delgado Eraso","method":"PR","slots":[{"day":2,"start":"10:00","end":"12:59","room":"503E","type":"TEO"}]}],"ibq_bioreac":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"07:00","end":"08:59","room":"307C","type":"TEO"},{"day":4,"start":"07:00","end":"08:59","room":"307C","type":"TEO"},{"day":5,"start":"14:00","end":"16:59","room":"105N","type":"LAB"}]}],"ibq_ft1":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"09:00","end":"10:59","room":"205E","type":"TEO"},{"day":4,"start":"09:00","end":"10:59","room":"205E","type":"TEO"},{"day":1,"start":"10:00","end":"12:59","room":"107N","type":"LAB"}]}],"ibq_term2":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":3,"start":"07:00","end":"08:59","room":"206C","type":"TEO"},{"day":5,"start":"07:00","end":"08:59","room":"206C","type":"TEO"}]}],"ibq_inge":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":3,"start":"11:00","end":"12:59","room":"406E","type":"TEO"},{"day":5,"start":"11:00","end":"12:59","room":"207C","type":"TEO"}]}],"ibq_ferm":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"307E","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"307E","type":"TEO"},{"day":3,"start":"07:00","end":"12:59","room":"105N","type":"LAB"}]},{"group":"003","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"307E","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"307E","type":"TEO"},{"day":2,"start":"07:00","end":"12:59","room":"305C","type":"LAB"}]}],"ibq_modp":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"16:00","end":"17:59","room":"408D","type":"TEO"},{"day":4,"start":"16:00","end":"17:59","room":"305C","type":"TEO"}]}],"ibq_ft2":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":1,"start":"14:00","end":"16:29","room":"307D","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"307D","type":"TEO"},{"day":5,"start":"09:00","end":"12:59","room":"106N","type":"LAB"}]}],"ibq_crea":[{"group":"001","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":1,"start":"07:00","end":"09:29","room":"310M","type":"TEO"},{"day":3,"start":"07:00","end":"08:59","room":"310M","type":"TEO"}]},{"group":"003","teacher":"Oferta IBQ 2025-2","method":"PR","slots":[{"day":2,"start":"09:00","end":"10:59","room":"308E","type":"TEO"},{"day":4,"start":"09:00","end":"10:59","room":"308E","type":"TEO"}]}],"ibq_pg1":[{"group":"001","nrc":"10629","teacher":"Profesor por asignar","method":"PR","slots":[{"day":1,"start":"14:00","end":"17:59","room":"206D","type":"TEO"}]}],"ibq_biop":[{"group":"001","nrc":"10630/10631","teacher":"Laura Valentina Hoyos Cordoba","method":"PR","slots":[{"day":3,"start":"07:00","end":"10:59","room":"409E","type":"TEO"},{"day":3,"start":"14:00","end":"16:59","room":"104N","type":"LAB"}]}],"ibq_sep":[{"group":"001","nrc":"10628/10650","teacher":"Oscar Javier Franco Solarte / Iria Elhany Paz Luna","method":"PR","slots":[{"day":5,"start":"14:00","end":"16:59","room":"501E","type":"TEO"},{"day":4,"start":"07:00","end":"12:59","room":"109N","type":"LAB"}]}],"ibq_ger":[{"group":"001","nrc":"10641","teacher":"Maria Paola Segura Gonzalez","method":"PR","slots":[{"day":2,"start":"14:00","end":"16:59","room":"304E","type":"TEO"}]},{"group":"003","nrc":"10507","teacher":"Carolina Orozco Donneys","method":"PR","slots":[{"day":1,"start":"07:00","end":"10:59","room":"106D","type":"TEO"}]}],"ibq_der":[{"group":"001","nrc":"10196","teacher":"Juan Fernando Urriago Gallardo","method":"PR","slots":[{"day":1,"start":"07:00","end":"08:59","room":"108D","type":"TEO"},{"day":3,"start":"07:00","end":"08:29","room":"108D","type":"TEO"}]},{"group":"003","nrc":"10197","teacher":"Lisbeth Garcia Rubio","method":"PR","slots":[{"day":1,"start":"11:00","end":"12:59","room":"108D","type":"TEO"},{"day":3,"start":"10:00","end":"11:29","room":"108D","type":"TEO"}]},{"group":"005","nrc":"10198","teacher":"Diana Maria Pineda Escandon","method":"PR","slots":[{"day":3,"start":"19:00","end":"21:59","room":"305E","type":"TEO"}]},{"group":"007","nrc":"10199","teacher":"Julian Andres Rojas Camargo","method":"PR","slots":[{"day":3,"start":"11:30","end":"12:59","room":"108D","type":"TEO"},{"day":5,"start":"11:30","end":"12:59","room":"108D","type":"TEO"}]},{"group":"009","nrc":"10203","teacher":"Lisbeth Garcia Rubio","method":"PR","slots":[{"day":1,"start":"09:00","end":"10:59","room":"108D","type":"TEO"},{"day":3,"start":"08:30","end":"09:59","room":"108D","type":"TEO"}]}],"ibq_pg2":[{"group":"001","nrc":"10654","teacher":"Erika Yuliana Ortiz Montoya","method":"PR","slots":[{"day":1,"start":"09:00","end":"12:59","room":"206C","type":"TEO"}]}],"ibq_labbq":[{"group":"001","nrc":"10651","teacher":"Nelson Hernando Caicedo Ortega","method":"PR","slots":[{"day":2,"start":"08:00","end":"11:59","room":"114N","type":"LAB"},{"day":3,"start":"08:00","end":"11:59","room":"114N","type":"LAB"},{"day":4,"start":"08:00","end":"11:59","room":"114N","type":"LAB"},{"day":5,"start":"07:00","end":"08:59","room":"106G","type":"LAB"},{"day":5,"start":"09:00","end":"11:59","room":"114N","type":"LAB"}]}],"ibq_lid":[{"group":"001","nrc":"10014","teacher":"Monica Franco Angel","method":"PR","slots":[{"day":1,"start":"09:00","end":"12:59","room":"109D","type":"TEO"}]},{"group":"003","nrc":"10015","teacher":"Monica Franco Angel","method":"PR","slots":[{"day":1,"start":"14:00","end":"17:59","room":"104D","type":"TEO"}]},{"group":"005","nrc":"10441","teacher":"Jimena Botero Sarassa","method":"PR","slots":[{"day":3,"start":"19:00","end":"21:59","room":"104D","type":"TEO"}]},{"group":"007","nrc":"10016","teacher":"Jimena Botero Sarassa","method":"PR","slots":[{"day":2,"start":"10:00","end":"12:59","room":"104D","type":"TEO"}]},{"group":"009","nrc":"10017","teacher":"Jimena Botero Sarassa","method":"PR","slots":[{"day":2,"start":"14:00","end":"16:59","room":"102D","type":"TEO"}]},{"group":"011","nrc":"10018","teacher":"Maria Fernanda Castaño Orozco","method":"PR","slots":[{"day":3,"start":"07:00","end":"09:59","room":"104D","type":"TEO"}]},{"group":"013","nrc":"10019","teacher":"Maria Fernanda Castaño Orozco","method":"PR","slots":[{"day":3,"start":"10:00","end":"12:59","room":"104D","type":"TEO"}]}],"ibq_prac":[{"group":"001","nrc":"10684","teacher":"Profesor por asignar","method":"PR","slots":[{"day":4,"start":"19:00","end":"21:59","room":"307E","type":"TEO"}]}],"quf_lid":[{"group":"005","nrc":"10260","teacher":"Silvia Helena Cujar Cuellar","method":"PR","slots":[{"day":3,"start":"19:00","end":"21:59","room":"305E","type":"TEO"}]},{"group":"007","nrc":"10016","teacher":"Monica Franco Angel","method":"PR","slots":[{"day":2,"start":"10:00","end":"12:59","room":"104D","type":"TEO"}]},{"group":"009","nrc":"10017","teacher":"Monica Franco Angel","method":"PR","slots":[{"day":2,"start":"14:00","end":"16:59","room":"104D","type":"TEO"}]},{"group":"011","nrc":"10018","teacher":"Catalina Pelaez Terranova","method":"PR","slots":[{"day":3,"start":"07:00","end":"09:59","room":"104D","type":"TEO"}]},{"group":"013","nrc":"10019","teacher":"Catalina Pelaez Terranova","method":"PR","slots":[{"day":3,"start":"10:00","end":"12:59","room":"104D","type":"TEO"}]},{"group":"015","nrc":"10020","teacher":"Catalina Pelaez Terranova","method":"PR","slots":[{"day":4,"start":"10:00","end":"12:59","room":"105D","type":"TEO"}]}],"quf_bioe":[{"group":"001","nrc":"10239","teacher":"Daniel Felipe Osorio Holguin","method":"PR","slots":[{"day":1,"start":"14:00","end":"15:59","room":"402E","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"402E","type":"TEO"}]},{"group":"003","nrc":"10240","teacher":"Daniel Felipe Osorio Holguin","method":"PR","slots":[{"day":3,"start":"07:00","end":"08:59","room":"502E","type":"TEO"},{"day":5,"start":"07:00","end":"08:59","room":"502E","type":"TEO"}]}],"quf_der":[{"group":"001","nrc":"10258","teacher":"Juan Fernando Urriago Gallardo","method":"PR","slots":[{"day":1,"start":"07:00","end":"08:29","room":"108D","type":"TEO"},{"day":3,"start":"07:00","end":"08:29","room":"108D","type":"TEO"}]},{"group":"003","nrc":"10259","teacher":"Lisbeth Garcia Rubio","method":"PR","slots":[{"day":3,"start":"10:00","end":"11:29","room":"108D","type":"TEO"},{"day":5,"start":"10:00","end":"11:29","room":"108D","type":"TEO"}]},{"group":"007","nrc":"10261","teacher":"Andrea Cristina Viveros Cuasquer","method":"PR","slots":[{"day":3,"start":"11:30","end":"12:59","room":"108D","type":"TEO"},{"day":5,"start":"11:30","end":"12:59","room":"108D","type":"TEO"}]},{"group":"009","nrc":"10267","teacher":"Lisbeth Garcia Rubio","method":"PR","slots":[{"day":3,"start":"08:30","end":"09:59","room":"108D","type":"TEO"},{"day":5,"start":"08:30","end":"09:59","room":"108D","type":"TEO"}]},{"group":"011","nrc":"10263","teacher":"Maricel Echeverry Mondragon","method":"PR","slots":[{"day":2,"start":"10:00","end":"11:29","room":"108D","type":"TEO"},{"day":4,"start":"10:00","end":"11:29","room":"108D","type":"TEO"}]}],"quf_fisq1":[{"group":"001","nrc":"10511/10787","teacher":"Carlos Alberto Arango Mambuscay / Juan David Mendez Gonzalez","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"402E","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"402E","type":"TEO"},{"day":3,"start":"16:00","end":"18:59","room":"204L","type":"LAB"}]},{"group":"003","nrc":"10511/11233","teacher":"Carlos Alberto Arango Mambuscay / Juan David Mendez Gonzalez","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"402E","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"402E","type":"TEO"},{"day":5,"start":"16:00","end":"18:59","room":"204L","type":"LAB"}]}],"quf_bcl":[{"group":"001","nrc":"10728/10730","teacher":"Juliana Rengifo Gomez / Angie Marcela Guañarita Bañol","method":"PR","slots":[{"day":2,"start":"10:00","end":"11:29","room":"309E","type":"TEO"},{"day":4,"start":"10:00","end":"11:29","room":"309E","type":"TEO"},{"day":4,"start":"16:00","end":"18:59","room":"102L","type":"LAB"}]},{"group":"003","nrc":"10729/10731","teacher":"Juliana Rengifo Gomez / Angie Marcela Guañarita Bañol","method":"PR","slots":[{"day":2,"start":"11:30","end":"12:59","room":"309E","type":"TEO"},{"day":4,"start":"11:30","end":"12:59","room":"309E","type":"TEO"},{"day":5,"start":"10:00","end":"12:59","room":"101L","type":"LAB"}]}],"quf_qo2":[{"group":"001","nrc":"10515/10516","teacher":"Nora Elena Valderruten Posso / Kriss Dayana Pantoja Pulido","method":"PR/CE","slots":[{"day":3,"start":"07:00","end":"08:59","room":"404E","type":"TEO"},{"day":5,"start":"07:00","end":"08:59","room":"404E","type":"TEO"},{"day":1,"start":"10:00","end":"12:59","room":"203L","type":"LAB"}]},{"group":"003","nrc":"10517/11034","teacher":"Nora Elena Valderruten Posso / Lynn Carla Usher","method":"PR/CE","slots":[{"day":1,"start":"14:00","end":"15:59","room":"207L","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"207L","type":"TEO"},{"day":2,"start":"16:00","end":"18:59","room":"203L","type":"LAB"}]},{"group":"005","nrc":"10517/11309","teacher":"Nora Elena Valderruten Posso / Diego Javier Enriquez Valencia","method":"PR/CE","slots":[{"day":1,"start":"14:00","end":"15:59","room":"207L","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"207L","type":"TEO"},{"day":1,"start":"07:00","end":"09:59","room":"203L","type":"LAB"}]}],"quf_doe":[{"group":"001","nrc":"10237","teacher":"Norbey Marin Arredondo","method":"PR","slots":[{"day":2,"start":"07:00","end":"08:59","room":"303C","type":"TEO"},{"day":4,"start":"07:00","end":"08:59","room":"303C","type":"TEO"}]},{"group":"003","nrc":"10238","teacher":"Norbey Marin Arredondo","method":"PR","slots":[{"day":3,"start":"11:00","end":"12:59","room":"205C","type":"TEO"},{"day":5,"start":"11:00","end":"12:59","room":"205C","type":"TEO"}]}],"quf_mic":[{"group":"001","nrc":"10788/10789","teacher":"Andres Felipe Davalos Velez / Aura Elena Vivas Parra","method":"PR/CE","slots":[{"day":1,"start":"14:00","end":"15:29","room":"309E","type":"TEO"},{"day":3,"start":"14:00","end":"15:29","room":"309E","type":"TEO"},{"day":5,"start":"14:00","end":"16:59","room":"101L","type":"LAB"}]},{"group":"003","nrc":"11489/10821","teacher":"Andres Felipe Davalos Velez / Andrea Carolina Aguirre Rodriguez","method":"PR/CE","slots":[{"day":1,"start":"15:30","end":"16:59","room":"309E","type":"TEO"},{"day":3,"start":"15:30","end":"16:59","room":"309E","type":"TEO"},{"day":5,"start":"16:00","end":"18:59","room":"102L","type":"LAB"}]}],"quf_fisq2":[{"group":"001","nrc":"11310/10518","teacher":"Carlos Alberto Arango Mambuscay / Juan Sebastian Molano Peña","method":"PR","slots":[{"day":3,"start":"09:00","end":"10:59","room":"201E","type":"TEO"},{"day":5,"start":"09:00","end":"10:59","room":"201E","type":"TEO"},{"day":2,"start":"10:00","end":"12:59","room":"204L","type":"LAB"}]},{"group":"003","nrc":"11310/10519","teacher":"Carlos Alberto Arango Mambuscay / Juan Sebastian Molano Peña","method":"PR","slots":[{"day":3,"start":"09:00","end":"10:59","room":"201E","type":"TEO"},{"day":5,"start":"09:00","end":"10:59","room":"201E","type":"TEO"},{"day":6,"start":"08:00","end":"10:59","room":"206L","type":"LAB"}]}],"quf_aninst":[{"group":"001","nrc":"10520/10521","teacher":"Giovanni Rojas Jimenez / John Jairo Urbano Solarte","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"205L","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"205L","type":"TEO"},{"day":4,"start":"10:00","end":"12:59","room":"206L","type":"LAB"}]},{"group":"003","nrc":"10520/10522","teacher":"Giovanni Rojas Jimenez / John Jairo Urbano Solarte","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"205L","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"205L","type":"TEO"},{"day":6,"start":"14:00","end":"16:59","room":"206L","type":"LAB"}]}],"quf_salud":[{"group":"001","nrc":"10466","teacher":"Profesor por asignar","method":"PR","slots":[{"day":1,"start":"07:00","end":"09:59","room":"205L","type":"TEO"}]}],"quf_biom":[{"group":"001","nrc":"10375","teacher":"Juliana Andrea Cabrera Perdomo","method":"PR","slots":[{"day":3,"start":"11:00","end":"12:59","room":"105D","type":"TEO"},{"day":5,"start":"11:00","end":"12:59","room":"105D","type":"TEO"}]},{"group":"003","nrc":"10633","teacher":"Gloria Isabel Giraldo Calderon","method":"PR","slots":[{"day":3,"start":"11:00","end":"12:59","room":"106D","type":"TEO"},{"day":5,"start":"11:00","end":"12:59","room":"106D","type":"TEO"}]}],"quf_farmt1":[{"group":"001","nrc":"10542/10543","teacher":"Profesor por asignar / Anderson Virgilio Luna Gomez","method":"PR","slots":[{"day":5,"start":"07:00","end":"09:59","room":"306L","type":"TEO"},{"day":2,"start":"07:00","end":"11:59","room":"303L","type":"LAB"}]},{"group":"003","nrc":"10542/10544","teacher":"Profesor por asignar / Juan Diego Echeverri Ulloa","method":"PR","slots":[{"day":5,"start":"07:00","end":"09:59","room":"306L","type":"TEO"},{"day":6,"start":"07:00","end":"11:59","room":"303L","type":"LAB"}]}],"quf_farmcog":[{"group":"001","nrc":"10568/10538","teacher":"Guillermo Leon Montoya Pelaez / Kriss Dayana Pantoja Pulido","method":"PR","slots":[{"day":1,"start":"14:00","end":"15:59","room":"306L","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"306L","type":"TEO"},{"day":5,"start":"14:00","end":"19:59","room":"202L","type":"LAB"}]},{"group":"003","nrc":"10568/10539","teacher":"Guillermo Leon Montoya Pelaez / Diego Javier Enriquez Valencia","method":"PR","slots":[{"day":1,"start":"14:00","end":"15:59","room":"306L","type":"TEO"},{"day":3,"start":"14:00","end":"15:59","room":"306L","type":"TEO"},{"day":4,"start":"07:00","end":"12:59","room":"202L","type":"LAB"}]}],"quf_farm1":[{"group":"001","nrc":"11050","teacher":"Alvaro Andres Barrera Ocampo","method":"PR","slots":[{"day":1,"start":"09:00","end":"10:59","room":"301L","type":"TEO"},{"day":3,"start":"09:00","end":"10:59","room":"301L","type":"TEO"}]}],"quf_biofc":[{"group":"001","nrc":"10468/10736","teacher":"Julian Arbey Gonzalez Ospina","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"302L","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"302L","type":"TEO"},{"day":4,"start":"16:00","end":"18:59","room":"202L","type":"LAB"}]},{"group":"003","nrc":"10468/10737","teacher":"Julian Arbey Gonzalez Ospina","method":"PR","slots":[{"day":2,"start":"14:00","end":"15:59","room":"302L","type":"TEO"},{"day":4,"start":"14:00","end":"15:59","room":"302L","type":"TEO"},{"day":2,"start":"16:00","end":"18:59","room":"202L","type":"LAB"}]}],"quf_biote":[{"group":"001","nrc":"10495/10496","teacher":"Paola Andrea Caicedo Burbano / Juan Esteban Vivas Moncayo / Maria Eugenia Buitrago Gonzalez","method":"PR/CE","slots":[{"day":1,"start":"14:00","end":"15:29","room":"210D","type":"TEO"},{"day":3,"start":"14:00","end":"15:29","room":"210D","type":"TEO"},{"day":1,"start":"17:00","end":"19:59","room":"406L","type":"LAB"}]},{"group":"003","nrc":"10734/10497","teacher":"Paola Andrea Caicedo Burbano / Juan Esteban Vivas Moncayo / Maria Eugenia Buitrago Gonzalez","method":"PR/CE","slots":[{"day":1,"start":"15:30","end":"16:59","room":"210D","type":"TEO"},{"day":3,"start":"15:30","end":"16:59","room":"210D","type":"TEO"},{"day":1,"start":"10:00","end":"12:59","room":"406L","type":"LAB"}]}],"quf_farmt2":[{"group":"001","nrc":"10536/10640","teacher":"Juan Fernando Pinillos Madrid","method":"PR","slots":[{"day":2,"start":"10:00","end":"12:59","room":"301L","type":"TEO"},{"day":5,"start":"14:00","end":"18:59","room":"303L","type":"LAB"}]},{"group":"003","nrc":"10536/10537","teacher":"Juan Fernando Pinillos Madrid","method":"PR","slots":[{"day":2,"start":"10:00","end":"12:59","room":"301L","type":"TEO"},{"day":5,"start":"07:00","end":"11:59","room":"303L","type":"LAB"}]}],"quf_ctrl":[{"group":"001","nrc":"10540/10541","teacher":"Elizabeth Osorio Reyes","method":"PR","slots":[{"day":3,"start":"10:00","end":"12:59","room":"302L","type":"TEO"},{"day":2,"start":"14:00","end":"19:59","room":"201L","type":"LAB"}]},{"group":"003","nrc":"10540/10868","teacher":"Elizabeth Osorio Reyes","method":"PR","slots":[{"day":3,"start":"10:00","end":"12:59","room":"302L","type":"TEO"},{"day":4,"start":"14:00","end":"19:59","room":"201L","type":"LAB"}]}],"quf_farmas":[{"group":"001","nrc":"10650/10651","teacher":"Profesor por asignar","method":"PR","slots":[{"day":2,"start":"07:00","end":"09:59","room":"102E","type":"TEO"},{"day":4,"start":"07:00","end":"11:59","room":"304L","type":"LAB"}]}],"quf_farm2":[{"group":"001","nrc":"10869","teacher":"Steven Alexander David Jimenez","method":"PR","slots":[{"day":1,"start":"07:00","end":"08:59","room":"301L","type":"TEO"},{"day":3,"start":"07:00","end":"08:59","room":"301L","type":"TEO"}]}],"quf_asunto":[{"group":"001","nrc":"10993","teacher":"Karol Johana Marcillo Padilla","method":"PR","slots":[{"day":3,"start":"18:00","end":"20:59","room":"306L","type":"TEO"}]}],"quf_farmcl":[{"group":"001","nrc":"10822/10739","teacher":"Steven Alexander David Jimenez","method":"PR","slots":[{"day":5,"start":"10:00","end":"12:59","room":"205L","type":"TEO"},{"day":2,"start":"07:00","end":"11:59","room":"303E","type":"LAB"}]},{"group":"003","nrc":"10822/11199","teacher":"Steven Alexander David Jimenez","method":"PR","slots":[{"day":5,"start":"10:00","end":"12:59","room":"205L","type":"TEO"},{"day":4,"start":"07:00","end":"11:59","room":"401E","type":"LAB"}]}],"quf_farmin":[{"group":"001","nrc":"10545/10546","teacher":"Andres Mauricio Cogollo Carvajal","method":"PR","slots":[{"day":5,"start":"18:00","end":"20:59","room":"301L","type":"TEO"},{"day":6,"start":"07:00","end":"11:59","room":"304L","type":"LAB"}]},{"group":"003","nrc":"10545/10686","teacher":"Andres Mauricio Cogollo Carvajal / Carolina Del Pilar Mora Guerrero","method":"PR","slots":[{"day":5,"start":"18:00","end":"20:59","room":"301L","type":"TEO"},{"day":4,"start":"14:00","end":"18:59","room":"304L","type":"LAB"}]}],"quf_pg1":[{"group":"001","nrc":"10469","teacher":"Luz Angie Trujillo Salazar","method":"PR","slots":[{"day":1,"start":"14:00","end":"16:59","room":"107A","type":"TEO"}]}],"quf_pg2":[{"group":"001","nrc":"10470","teacher":"Luz Angie Trujillo Salazar","method":"PR","slots":[{"day":1,"start":"09:00","end":"12:59","room":"306L","type":"TEO"}]}],"quf_prac":[{"group":"001","nrc":"10471","teacher":"Profesor por asignar","method":"PR","slots":[{"day":4,"start":"19:00","end":"21:59","room":"205E","type":"TEO"}]}]};
+// ═══ STATE ═══
+let IBQ=JSON.parse(JSON.stringify(DEFAULT_IBQ));
+let QUF=JSON.parse(JSON.stringify(DEFAULT_QUF));
+let PREREQS=JSON.parse(JSON.stringify(DEFAULT_PREREQS));
+let SCHEDULES=JSON.parse(JSON.stringify(DEFAULT_SCHEDULES));
+let done=new Set(JSON.parse(localStorage.getItem('icesi_done')||'[]'));
+let schedule=JSON.parse(localStorage.getItem('icesi_sched')||'[]');if(!Array.isArray(schedule))schedule=[];
+let plannerCart=JSON.parse(localStorage.getItem('icesi_planner_cart')||'[]');if(!Array.isArray(plannerCart))plannerCart=[];
+let penFilter='all',treeFilter='all',planCarFilter='all',planEstFilter='all',planSem='all',schedCarFilter='all',schedStatusFilter='avail',schedSemFilter='all';
+let selectedMatForSlot=null,editingMatId=null,adminMode=false;
+
+function save(){
+  localStorage.setItem('icesi_done',JSON.stringify([...done]));
+  localStorage.setItem('icesi_sched',JSON.stringify(schedule));
+  localStorage.setItem('icesi_ibq',JSON.stringify(IBQ));
+  localStorage.setItem('icesi_quf',JSON.stringify(QUF));
+  localStorage.setItem('icesi_prereqs',JSON.stringify(PREREQS));
+  localStorage.setItem('icesi_schedule_catalog',JSON.stringify(SCHEDULES));
+  localStorage.setItem('icesi_planner_cart',JSON.stringify(plannerCart));
+}
+function loadSaved(){
+  const si=localStorage.getItem('icesi_ibq');
+  const sq=localStorage.getItem('icesi_quf');
+  const sp=localStorage.getItem('icesi_prereqs');
+  const ss=localStorage.getItem('icesi_schedule_catalog');
+  if(si)IBQ=JSON.parse(si);
+  if(sq)QUF=JSON.parse(sq);
+  if(sp)PREREQS=JSON.parse(sp);
+  if(ss)SCHEDULES=JSON.parse(ss);
+}
+function esc(v){return String(v??'').replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));}
+function sanitizeString(v,max=120){return String(v??'').replace(/[<>]/g,'').trim().slice(0,max);}
+function sanitizePensumData(data){
+  if(!data || typeof data!=='object') throw new Error('Formato inválido');
+  const normMat=(m,idx)=>{
+    if(!m || typeof m!=='object') throw new Error('Materia inválida');
+    const id=sanitizeString(m.id||('mat_'+Date.now()+'_'+idx),80).replace(/\s+/g,'_');
+    const n=sanitizeString(m.n,160);
+    const c=Math.max(1,Math.min(20,parseInt(m.c,10)||0));
+    const cat=['basica','ing','pro','elec'].includes(m.cat)?m.cat:'basica';
+    if(!id || !n || !c) throw new Error('Materia incompleta');
+    return {id,n,c,cat};
+  };
+  const normPensum=(pensum)=>{
+    if(!Array.isArray(pensum)) throw new Error('Pensum inválido');
+    const sems=[];
+    for(let s=1;s<=10;s++){
+      const found=pensum.find(x=>parseInt(x?.sem,10)===s);
+      const mats=Array.isArray(found?.m)?found.m.map((m,idx)=>normMat(m,idx)):[];
+      sems.push({sem:s,m:mats});
+    }
+    return sems;
+  };
+  const ibq=normPensum(data.ibq),quf=normPensum(data.quf);
+  const allIds=new Set([...ibq.flatMap(s=>s.m.map(m=>m.id)),...quf.flatMap(s=>s.m.map(m=>m.id))]);
+  const prereqs={};
+  if(data.prereqs && typeof data.prereqs==='object'){
+    Object.entries(data.prereqs).forEach(([k,arr])=>{
+      if(!allIds.has(k))return;
+      prereqs[k]=Array.isArray(arr)?[...new Set(arr.filter(p=>allIds.has(p)&&p!==k))]:[];
+    });
+  }
+  const schedules=(data.schedules && typeof data.schedules==='object')?data.schedules:JSON.parse(JSON.stringify(DEFAULT_SCHEDULES));
+  return {ibq,quf,prereqs,schedules};
+}
+
+// ═══ HELPERS ═══
+function resolveId(id){return SHARED[id]||id}
+function isDone(id){return done.has(resolveId(id))}
+function isAvail(id){return(PREREQS[id]||[]).every(x=>isDone(x))}
+function status(id){if(isDone(id))return'done';if(!(PREREQS[id]?.length))return'free';if(isAvail(id))return'avail';return'blocked';}
+function getName(id){const r=resolveId(id);for(const s of IBQ)for(const m of s.m)if(m.id===r)return m.n;for(const s of QUF)for(const m of s.m)if(m.id===id)return m.n;return id;}
+function getCred(id){const r=resolveId(id);for(const s of IBQ)for(const m of s.m)if(m.id===r)return m.c;for(const s of QUF)for(const m of s.m)if(m.id===id)return m.c;return 0;}
+function allIBQ(){const r=[];IBQ.forEach(s=>s.m.forEach(m=>r.push({...m,sem:s.sem,carrera:'ibq'})));return r;}
+function allQUF(){const r=[];QUF.forEach(s=>s.m.forEach(m=>r.push({...m,sem:s.sem,carrera:'quf'})));return r;}
+function allMats(){return[...allIBQ(),...allQUF()];}
+function getMatById(id){return allMats().find(m=>m.id===id)||null;}
+function getMatStatusClass(id){const s=status(id);return s==='done'?'ok':(s==='blocked'?'bad':'warn');}
+function getMissingPrereqs(id){return (PREREQS[id]||[]).filter(p=>!isDone(p));}
+function getRawScheduleOptions(id){return Array.isArray(SCHEDULES[id])?SCHEDULES[id]:[];}
+function normalizeScheduleOptions(id){const raw=getRawScheduleOptions(id),norm=[],seen=new Set();raw.forEach((sec,idx)=>{const grouped={};(sec.slots||[]).forEach(slot=>{const key=slot.type||'GEN';(grouped[key]||(grouped[key]=[])).push(slot);});const keys=Object.keys(grouped);if(keys.includes('TEO')&&keys.includes('LAB')){['TEO','LAB'].forEach(comp=>{if(!grouped[comp]?.length)return;const item={...sec,component:comp,componentLabel:comp==='TEO'?'Teoría':'Laboratorio',slots:grouped[comp]};const sig=JSON.stringify([comp,sec.group||'',sec.nrc||'',item.slots]);if(!seen.has(sig)){seen.add(sig);norm.push(item);}});}else{const comp=keys[0]==='GEN'?'':keys[0];const item={...sec,component:comp,componentLabel:comp==='TEO'?'Teoría':comp==='LAB'?'Laboratorio':'General'};const sig=JSON.stringify([comp,sec.group||'',sec.nrc||'',item.slots]);if(!seen.has(sig)){seen.add(sig);norm.push(item);}}});return norm;}
+function courseComponentsNeeded(id){const opts=normalizeScheduleOptions(id);const needLab=opts.some(o=>o.component==='LAB');const needTeo=opts.some(o=>o.component==='TEO')||(!needLab&&opts.length>0);return{needTeo,needLab};}
+function selectedComponentsForCourse(id){return [...new Set(schedule.filter(s=>s.id===id).map(s=>s.component||'GEN'))];}
+function courseSelectionSummary(id){const need=courseComponentsNeeded(id),selected=selectedComponentsForCourse(id),parts=[];if(need.needTeo)parts.push(selected.includes('TEO')||selected.includes('GEN')?'TEO ✅':'TEO pendiente');if(need.needLab)parts.push(selected.includes('LAB')?'LAB ✅':'LAB pendiente');return parts.join(' · ');}
+function componentBadge(comp){return comp==='LAB'?'Laboratorio':comp==='TEO'?'Teoría':'Grupo';}
+function statusSortValue(s){return{avail:0,free:0,blocked:1,done:2}[s]??3;}
+function matCareerColor(car){return car==='quf'?'var(--quf)':'var(--ibq)';}
+
+function ibqProgress(){let cr=0,tot=0,dn=0;IBQ.forEach(s=>s.m.forEach(m=>{tot+=m.c;if(isDone(m.id)){cr+=m.c;dn++;}}));return{cr,tot,dn};}
+function qufProgress(){let cr=0,tot=0,dn=0;QUF.forEach(s=>s.m.forEach(m=>{tot+=m.c;if(isDone(m.id)){cr+=m.c;dn++;}}));return{cr,tot,dn};}
+function toggleDone(id){
+  const rid=resolveId(id);
+  const st=status(id);
+  if(st==='blocked'){const missing=(PREREQS[id]||[]).filter(p=>!isDone(p)).map(getName).join(', ');alert(`🔒 No puedes marcar esta materia.\nFaltan prerrequisitos: ${missing}`);return;}
+  if(done.has(rid))done.delete(rid);else done.add(rid);
+  save();renderAll();
+}
+function statusIcon(s){return{done:'✅',avail:'🔓',free:'🔓',blocked:'🔒'}[s]||'❓';}
+function statusLabel(s){return{done:'Completada',avail:'Disponible',free:'Disponible',blocked:'Bloqueada'}[s]||s;}
+
+// ═══ MODE ═══
+function setMode(m,btn){
+  adminMode=m==='admin';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display=adminMode?'':'none');
+  renderAll();
+}
+
+// ═══ NAV ═══
+function nav(id,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('view-'+id).classList.add('on');
+  btn.classList.add('on');
+  renderAll();
+}
+
+// ═══ RENDER ALL ═══
+function renderAll(){renderNav();renderDash();renderPensum();renderTree();renderPlanner();renderScheduler();if(adminMode)renderEditor();}
+
+// ═══ NAV PILLS ═══
+function renderNav(){
+  const i=ibqProgress(),q=qufProgress();
+  document.getElementById('np-ibq').textContent=`IBQ ${i.cr}/${i.tot}`;
+  document.getElementById('np-quf').textContent=`QUF ${q.cr}/${q.tot}`;
+}
+
+// ═══ DASHBOARD ═══
+function renderDash(){
+  const i=ibqProgress(),q=qufProgress();
+  const avail=allMats().filter(m=>!isDone(m.id)&&(status(m.id)==='avail'||status(m.id)==='free')).length;
+  document.getElementById('stat-row').innerHTML=`
+    <div class="stat-box"><div class="stat-n" style="color:var(--ibq)">${i.cr}</div><div class="stat-l">Créditos IBQ</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--quf)">${q.cr}</div><div class="stat-l">Créditos QUF</div></div>
+    <div class="stat-box"><div class="stat-n">${i.dn+q.dn}</div><div class="stat-l">Materias cursadas</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--ok)">${avail}</div><div class="stat-l">Disponibles ahora</div></div>`;
+  document.getElementById('prog-ibq').style.width=Math.round(i.cr/i.tot*100)+'%';
+  document.getElementById('prog-ibq-txt').textContent=`${i.cr}/${i.tot} cr.`;
+  document.getElementById('prog-quf').style.width=Math.round(q.cr/q.tot*100)+'%';
+  document.getElementById('prog-quf-txt').textContent=`${q.cr}/${q.tot} cr.`;
+  // timeline
+  const currSem=detectCurrentSem();
+  document.getElementById('tl-row').innerHTML=Array.from({length:10},(_,idx)=>{const s=idx+1;const cls=s<currSem?'tl-done':s===currSem?'tl-curr':'';const line=s<10?'<div class="tl-line"></div>':'';return`<div class="tl-step"><div class="tl-dot ${cls}">${s}</div>${line}<div class="tl-label">S${s}</div></div>`;}).join('');
+  // next sem
+  const nextMats=getNextSemSuggestion();
+  document.getElementById('next-sem-list').innerHTML=nextMats.length
+    ?nextMats.map(m=>`<div class="avail-item"><span class="avail-dot ad-avail"></span><span style="flex:1;font-size:16px">${m.n}</span><span style="font-size:14px;font-weight:700;color:#64748b">${m.c} cr.</span></div>`).join('')+`<div style="margin-top:10px;font-size:15px;font-weight:700;color:#475569">Total: ${nextMats.reduce((a,m)=>a+m.c,0)} créditos</div>`
+    :'<div style="font-size:15px;color:#94a3b8">Marca materias cursadas para ver sugerencias.</div>';
+  // avail now
+  const avM=allMats().filter(m=>!isDone(m.id)&&(status(m.id)==='avail'||status(m.id)==='free')).slice(0,8);
+  document.getElementById('avail-now').innerHTML=avM.map(m=>`<div class="avail-item"><span class="avail-dot ad-avail"></span><span style="flex:1;font-size:16px">${m.n}</span><span style="font-size:14px;font-weight:700;color:#64748b">${m.c} cr.</span></div>`).join('')||'<div style="font-size:15px;color:#94a3b8">Todo disponible o nada desbloqueado.</div>';
+  // bottlenecks
+  document.getElementById('bottleneck-list').innerHTML=BOTTLENECKS.filter(id=>!isDone(id)).slice(0,5).map(id=>`<div class="avail-item"><span class="avail-dot" style="background:var(--warn)"></span><span style="flex:1;font-size:16px">${getName(id)}</span><span style="font-size:13px;font-weight:700;color:${status(id)==='avail'?'var(--ok)':'var(--danger)'}">${status(id)==='avail'?'🔓 Disponible':'🔒 Bloqueada'}</span></div>`).join('')||'<div style="font-size:15px;color:var(--ok)">¡Todas las materias críticas cursadas! 🎉</div>';
+  renderRisk(i,q);renderBadges(i,q);
+}
+function detectCurrentSem(){let m=0;allIBQ().forEach(({id,sem})=>{if(isDone(id)&&sem>m)m=sem});allQUF().forEach(({id,sem})=>{if(isDone(id)&&sem>m)m=sem});return Math.min(Math.max(m+1,1),10);}
+function getNextSemSuggestion(){
+  const el=allMats().filter(m=>!isDone(m.id)&&(status(m.id)==='avail'||status(m.id)==='free'));
+  const sc=el.map(m=>({...m,score:Object.keys(PREREQS).filter(k=>(PREREQS[k]||[]).includes(m.id)).length*2+m.c})).sort((a,b)=>b.score-a.score);
+  let cr=0;const pick=[];
+  for(const m of sc){if(cr+m.c<=18){pick.push(m);cr+=m.c;if(pick.length>=5)break}}
+  return pick;
+}
+function renderRisk(i,q){
+  const pct=Math.max(i.cr/i.tot,q.cr/q.tot)*100;
+  let lv,col,txt;
+  if(pct>60){lv='🟢 Bajo';col='var(--ok)';txt='Vas en buen ritmo. ¡Sigue así!'}
+  else if(pct>30){lv='🟡 Medio';col='var(--warn)';txt='Hay materias críticas pendientes por desbloquear.'}
+  else{lv='🔴 Alto';col='var(--danger)';txt='Muchas materias bloqueadas. Prioriza Química y Cálculo.'}
+  document.getElementById('risk-section').innerHTML=`<div style="font-size:18px;font-weight:800;color:${col};margin-bottom:8px">${lv}</div><div style="font-size:15px;color:#475569">${txt}</div>`;
+}
+function renderBadges(i,q){
+  const defs=[
+    {n:'Primer semestre',cond:()=>i.dn>=5||q.dn>=5,icon:'🎓'},
+    {n:'50 créditos IBQ',cond:()=>i.cr>=50,icon:'⭐'},
+    {n:'Orgánica superada',cond:()=>isDone('ibq_qo1')||isDone('quf_qo1'),icon:'🧪'},
+    {n:'Mitad de carrera',cond:()=>i.cr>=84||q.cr>=90,icon:'🏁'},
+    {n:'Proyecto iniciado',cond:()=>isDone('ibq_pg1')||isDone('quf_pg1'),icon:'📄'},
+    {n:'100 créditos',cond:()=>i.cr>=100||q.cr>=100,icon:'💯'},
+    {n:'Graduación próxima',cond:()=>i.cr>=150||q.cr>=165,icon:'🏆'},
+  ];
+  document.getElementById('badges-container').innerHTML=defs.map(b=>`<div class="badge ${b.cond()?'earned':''}">${b.icon} ${b.n}</div>`).join('');
+}
+
+// ═══ PENSUM ═══
+function setPenFilter(f,btn){penFilter=f;document.querySelectorAll('#pen-filter-row .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderPensum();}
+function renderPensum(){renderPensumCol(IBQ,'ibq','col-ibq');renderPensumCol(QUF,'quf','col-quf');}
+function renderPensumCol(pensum,car,cid){
+  const cont=document.getElementById(cid);if(!cont)return;
+  let html='';
+  pensum.forEach(({sem,m})=>{
+    const chips=m.filter(mat=>{
+      if(penFilter==='all')return true;
+      if(penFilter==='ibq')return car==='ibq';
+      if(penFilter==='quf')return car==='quf';
+      const s=status(mat.id);
+      if(penFilter==='done')return s==='done';
+      if(penFilter==='avail')return s==='avail'||s==='free';
+      if(penFilter==='blocked')return s==='blocked';
+      return true;
+    });
+    if(!chips.length)return;
+    html+=`<div class="sem-block"><div class="sem-lbl">Semestre ${sem}</div>`;
+    chips.forEach(m=>{
+      const s=status(m.id);
+      const isShared=SHARED[m.id]||Object.values(SHARED).includes(m.id);
+      const cls=s==='done'?'chip-done':s==='blocked'?'chip-blocked':isShared?'chip-shared':car==='ibq'?'chip-ibq':'chip-quf';
+      const cat=CAT_INFO[m.cat||'basica']||CAT_INFO.basica;
+      html+=`<div class="chip ${cls}" onclick="toggleDone('${m.id}')">
+        <span class="status-icon">${statusIcon(s)}</span>
+        <span class="chip-name">${m.n}${isShared?' 🔄':''}</span>
+        <span style="font-size:11px;font-weight:800;padding:2px 7px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+        <span class="chip-cred">${m.c} cr.</span>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  cont.innerHTML=html||'<div class="sem-block"><div style="font-size:15px;color:#94a3b8">Sin materias para este filtro.</div></div>';
+}
+
+// ═══ SKILL TREE ═══
+function setTreeFilter(f,btn){treeFilter=f;document.querySelectorAll('#tree-filter-row .tf-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderTree();}
+function renderTree(){
+  const canvas=document.getElementById('skill-canvas');const svg=document.getElementById('edge-svg');
+  if(!canvas)return;
+  canvas.querySelectorAll('.node').forEach(n=>n.remove());svg.innerHTML='';
+  const mats=[];
+  (treeFilter==='quf'?QUF:IBQ).forEach(s=>s.m.forEach(m=>mats.push({...m,carrera:treeFilter==='quf'?'quf':'ibq'})));
+  if(treeFilter==='all')QUF.forEach(s=>s.m.forEach(m=>{if(!SHARED[m.id])mats.push({...m,carrera:'quf'})}));
+  const nW=130,nH=44;let maxX=0,maxY=0;
+  mats.forEach(m=>{
+    const pos=TREE_LAYOUT[m.id];if(!pos)return;
+    const s=status(m.id);
+    let cls='node-blocked';
+    if(s==='done')cls='node-done';
+    else if(s==='avail'||s==='free')cls=m.carrera==='quf'?'node-quf':'node-avail';
+    const node=document.createElement('div');
+    node.className=`node ${cls}`;
+    node.style.cssText=`left:${pos.x}px;top:${pos.y}px;width:${nW}px`;
+    node.textContent=m.n;
+    node.onclick=()=>{
+      const prereqs=(PREREQS[m.id]||[]).map(getName).join(', ')||'Ninguno';
+      const tip=document.getElementById('tooltip');
+      tip.innerHTML=`<strong>${m.n}</strong><br>${m.c} cr. · ${statusLabel(s)}<br>Prerreqs: ${prereqs}`;
+      tip.style.display='block';setTimeout(()=>tip.style.display='none',3500);
+    };
+    canvas.appendChild(node);maxX=Math.max(maxX,pos.x+nW+20);maxY=Math.max(maxY,pos.y+nH+20);
+  });
+  svg.setAttribute('width',maxX);svg.setAttribute('height',maxY);
+  canvas.style.cssText=`position:relative;min-width:${maxX}px;min-height:${maxY}px`;
+  mats.forEach(m=>{
+    const pos=TREE_LAYOUT[m.id];if(!pos)return;
+    (PREREQS[m.id]||[]).forEach(pId=>{
+      const pp=TREE_LAYOUT[pId];if(!pp)return;
+      const x1=pp.x+nW/2,y1=pp.y+nH,x2=pos.x+nW/2,y2=pos.y;
+      const stroke=isDone(pId)?'#4ade80':isDone(m.id)?'#60a5fa':'#cbd5e1';
+      svg.innerHTML+=`<path d="M${x1},${y1} C${x1},${(y1+y2)/2} ${x2},${(y1+y2)/2} ${x2},${y2}" fill="none" stroke="${stroke}" stroke-width="2" opacity="0.7"/>`;
+    });
+  });
+}
+
+// ═══ PLANNER ═══
+
+function ensurePlannerFilterButtons(){
+  const carEl=document.getElementById('pl-filter-car');
+  if(carEl && !carEl.children.length){[['Todas','all'],['Solo IBQ','ibq'],['Solo QUF','quf']].forEach(([l,v])=>{const b=document.createElement('button');b.className='mini-pill'+(v===planCarFilter?' on':'');b.textContent=l;b.onclick=()=>{planCarFilter=v;renderPlanner();};carEl.appendChild(b);});}
+  const estEl=document.getElementById('pl-filter-est');
+  if(estEl && !estEl.children.length){[['Disponibles','avail'],['Bloqueadas','blocked'],['Cursadas','done'],['Todas','all']].forEach(([l,v])=>{const b=document.createElement('button');b.className='mini-pill'+(v===planEstFilter?' on':'');b.textContent=l;b.onclick=()=>{planEstFilter=v;renderPlanner();};estEl.appendChild(b);});}
+}
+function setPlanSem(v,btn){planSem=v;renderPlanner();}
+function plannerFilteredCourses(){return allMats().filter(m=>{if(planSem!=='all'&&m.sem!=planSem)return false;if(planCarFilter==='ibq'&&m.carrera!=='ibq')return false;if(planCarFilter==='quf'&&m.carrera!=='quf')return false;const s=status(m.id);if(planEstFilter==='avail'&&!(s==='avail'||s==='free'))return false;if(planEstFilter==='blocked'&&s!=='blocked')return false;if(planEstFilter==='done'&&s!=='done')return false;return true;}).sort((a,b)=>a.sem-b.sem||statusSortValue(status(a.id))-statusSortValue(status(b.id))||a.n.localeCompare(b.n));}
+function plannerAdd(id){if(!plannerCart.includes(id)){plannerCart.push(id);save();renderPlanner();}}
+function plannerRemove(id){plannerCart=plannerCart.filter(x=>x!==id);save();renderPlanner();}
+function clearPlannerCart(){plannerCart=[];save();renderPlanner();}
+function getPlannerCourseSlots(id){const opts=normalizeScheduleOptions(id);const pick=[];const t=opts.find(o=>o.component==='TEO')||opts.find(o=>!o.component)||null;const l=opts.find(o=>o.component==='LAB')||null;if(t)pick.push(...(t.slots||[]));if(l)pick.push(...(l.slots||[]));return pick;}
+function plannerConflictPairs(){const pairs=[];for(let i=0;i<plannerCart.length;i++)for(let j=i+1;j<plannerCart.length;j++){const a=plannerCart[i],b=plannerCart[j],as=getPlannerCourseSlots(a),bs=getPlannerCourseSlots(b);if(as.some(sa=>bs.some(sb=>sa.day===sb.day && timeToMin(sa.start)<timeToMin(sb.end) && timeToMin(sa.end)>timeToMin(sb.start))))pairs.push([a,b]);}return pairs;}
+function renderPlanner(){const i=ibqProgress(),q=qufProgress();const pi=document.getElementById('pl-ibq');if(!pi)return;pi.style.width=Math.round(i.cr/i.tot*100)+'%';document.getElementById('pl-ibq-txt').textContent=`${i.cr}/${i.tot}`;document.getElementById('pl-quf').style.width=Math.round(q.cr/q.tot*100)+'%';document.getElementById('pl-quf-txt').textContent=`${q.cr}/${q.tot}`;ensurePlannerFilterButtons();document.querySelectorAll('#pl-filter-car .mini-pill').forEach((b,idx)=>b.classList.toggle('on',['all','ibq','quf'][idx]===planCarFilter));document.querySelectorAll('#pl-filter-est .mini-pill').forEach((b,idx)=>b.classList.toggle('on',['avail','blocked','done','all'][idx]===planEstFilter));const sp=document.getElementById('sem-pills-row');if(sp){sp.innerHTML='';['all',1,2,3,4,5,6,7,8,9,10].forEach(v=>{const btn=document.createElement('button');btn.className='sp'+(planSem===v?' on':'');btn.textContent=v==='all'?'Todos':`Sem. ${v}`;btn.onclick=()=>setPlanSem(v,btn);sp.appendChild(btn);});}renderSuggestList();renderPlannerGrid();renderPlannerCart();}
+function renderSuggestList(){const mats=getNextSemSuggestion();const el=document.getElementById('suggest-list');if(!el)return;if(!mats.length){el.innerHTML='<div class="banner-inline warn">No hay una sugerencia automática disponible todavía. Marca materias cursadas o libera prerrequisitos.</div>';return;}el.innerHTML=`<div class="banner-inline ok">Sugerencia rápida: ${mats.map(m=>esc(m.n)).join(' · ')} <strong style="margin-left:6px">(${mats.reduce((a,m)=>a+m.c,0)} créditos)</strong></div>`;}
+function renderPlannerGrid(){const grid=document.getElementById('planner-grid');if(!grid)return;const filtered=plannerFilteredCourses();if(!filtered.length){grid.innerHTML='<div class="empty-msg">Sin materias para los filtros seleccionados.</div>';return;}const grouped={};filtered.forEach(m=>((grouped[m.sem]||(grouped[m.sem]=[])).push(m)));grid.innerHTML=Object.keys(grouped).sort((a,b)=>a-b).map(sem=>{const mats=grouped[sem];return `<div class="planner-sem-block"><div class="planner-sem-head"><div class="planner-sem-title">Semestre ${sem}</div><div style="font-size:13px;font-weight:800;color:#64748b">${mats.length} materia(s)</div></div><div class="planner-course-list">${mats.map(m=>{const s=status(m.id),missing=getMissingPrereqs(m.id),inCart=plannerCart.includes(m.id),need=courseComponentsNeeded(m.id);const chips=[`<span class="meta-chip ${getMatStatusClass(m.id)}">${statusLabel(s)}</span>`,`<span class="meta-chip">${m.carrera.toUpperCase()}</span>`,`<span class="meta-chip">${m.c} cr.</span>`];if(need.needLab)chips.push('<span class="meta-chip warn">Requiere TEO + LAB</span>');if(missing.length)chips.push(`<span class="meta-chip bad">Faltan: ${missing.map(getName).map(esc).join(', ')}</span>`);return `<div class="planner-course-card"><div class="planner-course-main"><div class="planner-course-name">${esc(m.n)}</div><div class="planner-course-meta">${chips.join('')}</div></div><div class="planner-course-action">${inCart?`<button class="soft-btn" onclick="plannerRemove('${m.id}')">Quitar</button>`:(s==='blocked'?`<button class="soft-btn" disabled>Bloqueada</button>`:`<button class="soft-btn primary" onclick="plannerAdd('${m.id}')">+ Añadir</button>`)}${(normalizeScheduleOptions(m.id).length?`<span class="schedule-side-note">${normalizeScheduleOptions(m.id).length} opción(es)</span>`:'<span class="schedule-side-note">Sin horario fijo</span>')}</div></div>`;}).join('')}</div></div>`;}).join('');}
+function renderPlannerCart(){const list=document.getElementById('planner-cart-list'),sum=document.getElementById('planner-cart-summary');if(!list||!sum)return;const mats=plannerCart.map(getMatById).filter(Boolean),cr=mats.reduce((a,m)=>a+m.c,0),pairs=plannerConflictPairs();sum.innerHTML=`<div class="cart-summary"><div class="cart-stat"><strong>${mats.length}</strong><span>Materias</span></div><div class="cart-stat"><strong>${cr}</strong><span>Créditos</span></div></div>${pairs.length?`<div class="banner-inline warn">⚠ Posibles cruces con los grupos por defecto: ${pairs.map(([a,b])=>`${esc(getName(a))} ↔ ${esc(getName(b))}`).join(' · ')}</div>`:'<div class="banner-inline ok">Sin cruces detectados con los grupos por defecto.</div>'}`;if(!mats.length){list.innerHTML='<div class="sched-empty">Tu semestre se verá aquí como una lista de compra. Añade materias disponibles para ir armándolo.</div>';return;}list.innerHTML=mats.map(m=>{const need=courseComponentsNeeded(m.id),slots=getPlannerCourseSlots(m.id),days=[...new Set(slots.map(s=>s.day))];return `<div class="cart-item"><div class="cart-item-main"><div style="font-size:15px;font-weight:800;color:#1e293b">${esc(m.n)}</div><div class="planner-course-meta" style="margin-top:4px"><span class="meta-chip">${m.carrera.toUpperCase()} · S${m.sem}</span><span class="meta-chip">${m.c} cr.</span>${need.needLab?'<span class="meta-chip warn">TEO + LAB</span>':''}${days.length?`<span class="meta-chip">${days.map(d=>DAYS[d]).join(', ')}</span>`:''}</div></div><button class="soft-btn" onclick="plannerRemove('${m.id}')">Quitar</button></div>`;}).join('');}
+function autoSuggest(){plannerCart=getNextSemSuggestion().map(m=>m.id);save();renderPlanner();}
+// ═══ SCHEDULER ═══
+
+const DAYS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const HOURS=Array.from({length:18},(_,i)=>`${(i+6).toString().padStart(2,'0')}:00`);
+const COLORS=['#2563eb','#9333ea','#d97706','#dc2626','#7c3aed','#0891b2','#0f766e','#0ea5e9','#f59e0b','#14b8a6'];
+function ensureSchedFilterButtons(){const car=document.getElementById('sched-filter-car');if(car&&!car.children.length){[['Todas','all'],['IBQ','ibq'],['QUF','quf']].forEach(([l,v])=>{const b=document.createElement('button');b.className='mini-pill'+(v===schedCarFilter?' on':'');b.textContent=l;b.onclick=()=>{schedCarFilter=v;renderScheduler();};car.appendChild(b);});}const est=document.getElementById('sched-filter-est');if(est&&!est.children.length){[['Disponibles','avail'],['Bloqueadas','blocked'],['Cursadas','done'],['Todas','all']].forEach(([l,v])=>{const b=document.createElement('button');b.className='mini-pill'+(v===schedStatusFilter?' on':'');b.textContent=l;b.onclick=()=>{schedStatusFilter=v;renderScheduler();};est.appendChild(b);});}}
+function renderSchedSemPills(){const el=document.getElementById('sched-sem-pills');if(!el)return;el.innerHTML='';['all',4,5,6,7,8,9,10].forEach(v=>{const b=document.createElement('button');b.className='sp'+(schedSemFilter===v?' on':'');b.textContent=v==='all'?'Todos':`Sem. ${v}`;b.onclick=()=>{schedSemFilter=v;renderScheduler();};el.appendChild(b);});}
+function getAvailForSched(){return allMats().filter(m=>m.sem>=4).filter(m=>{if(schedCarFilter!=='all'&&m.carrera!==schedCarFilter)return false;if(schedSemFilter!=='all'&&m.sem!==schedSemFilter)return false;const s=status(m.id);if(schedStatusFilter==='avail'&&!(s==='avail'||s==='free'))return false;if(schedStatusFilter==='blocked'&&s!=='blocked')return false;if(schedStatusFilter==='done'&&s!=='done')return false;return true;}).sort((a,b)=>a.carrera.localeCompare(b.carrera)||a.sem-b.sem||statusSortValue(status(a.id))-statusSortValue(status(b.id))||a.n.localeCompare(b.n));}
+function getScheduleOptions(id){return normalizeScheduleOptions(id);}
+function getSectionKey(id,sec,idx){return `${id}::${sec.component||'GEN'}::${sec.group||'G'}::${sec.nrc||idx}`;}
+function methodLabel(m){return{PR:'Presencial','PR/CE':'Presencial/Curso E','VR/S':'Virtual sincrónico'}[m]||m||'—';}
+function sectionLine(slot){return `<div class="section-line">${DAYS[slot.day]} · ${slot.start}-${slot.end}${slot.room?` · ${esc(slot.room)}`:''}${slot.type?` · ${slot.type}`:''}</div>`;}
+function renderScheduler(){ensureSchedFilterButtons();renderSchedSemPills();document.querySelectorAll('#sched-filter-car .mini-pill').forEach((b,idx)=>b.classList.toggle('on',['all','ibq','quf'][idx]===schedCarFilter));document.querySelectorAll('#sched-filter-est .mini-pill').forEach((b,idx)=>b.classList.toggle('on',['avail','blocked','done','all'][idx]===schedStatusFilter));const picker=document.getElementById('mat-picker');if(!picker)return;const mats=getAvailForSched();if(!mats.length){picker.innerHTML='<div class="sched-empty">No hay materias para esos filtros.</div>';renderSchedOptions();renderCalendar();renderSchedMeta();return;}const grouped={};mats.forEach(m=>{const key=`${m.carrera}-${m.sem}`;(grouped[key]||(grouped[key]={sem:m.sem,car:m.carrera,list:[]})).list.push(m);});picker.innerHTML=Object.values(grouped).sort((a,b)=>a.car.localeCompare(b.car)||a.sem-b.sem).map(g=>`<div class="sched-sem-block"><div class="sched-sem-head"><div class="sched-sem-title">${g.car.toUpperCase()} · Semestre ${g.sem}</div><div style="font-size:12px;font-weight:900;color:#64748b">${g.list.length} materia(s)</div></div><div class="sched-course-list">${g.list.map(m=>{const stat=status(m.id),opts=getScheduleOptions(m.id),need=courseComponentsNeeded(m.id),sel=selectedMatForSlot===m.id;const chips=[`<span class="meta-chip ${getMatStatusClass(m.id)}">${statusLabel(stat)}</span>`,`<span class="meta-chip">${m.c} cr.</span>`,`<span class="meta-chip">${opts.length} opc.</span>`];if(need.needLab)chips.push(`<span class="meta-chip warn">${courseSelectionSummary(m.id)||'TEO + LAB'}</span>`);return `<div class="sched-course-card ${sel?'sel':''}"><div class="sched-course-main" onclick="selectMatForSlot('${m.id}')"><div class="sched-course-name">${esc(m.n)}</div><div class="sched-course-meta">${chips.join('')}</div></div><div class="sched-course-action"><button class="soft-btn ${sel?'primary':''}" onclick="selectMatForSlot('${m.id}')">${sel?'Viendo':'Ver grupos'}</button></div></div>`;}).join('')}</div></div>`).join('');renderSchedOptions();renderCalendar();renderSchedMeta();}
+function selectMatForSlot(id){selectedMatForSlot=selectedMatForSlot===id?null:id;renderScheduler();}
+function renderSchedOptions(){const form=document.getElementById('slot-form'),picker=document.getElementById('section-picker'),meta=document.getElementById('slot-form-meta'),empty=document.getElementById('slot-form-empty'),ph=document.getElementById('slot-form-placeholder');if(!form||!picker||!meta||!empty||!ph)return;if(!selectedMatForSlot){form.style.display='none';ph.style.display='block';picker.innerHTML='';empty.style.display='none';return;}ph.style.display='none';form.style.display='block';document.getElementById('slot-form-name').textContent=getName(selectedMatForSlot);const mat=getMatById(selectedMatForSlot);meta.innerHTML=mat?`<span style="font-weight:800;color:${matCareerColor(mat.carrera)}">${mat.carrera.toUpperCase()} · S${mat.sem}</span> · ${mat.c} créditos · ${courseSelectionSummary(selectedMatForSlot)||'Sin componentes seleccionados'}`:'Materia seleccionada';const options=getScheduleOptions(selectedMatForSlot);if(!options.length){picker.innerHTML='';empty.style.display='block';empty.innerHTML='No hay horario precargado para esta materia. Puedes crearlo o editarlo desde el panel de Admin.';return;}empty.style.display='none';const withLab=courseComponentsNeeded(selectedMatForSlot).needLab;const groups={};options.forEach((sec,idx)=>((groups[sec.component||'GEN']||(groups[sec.component||'GEN']=[])).push({...sec,_idx:idx})));picker.innerHTML=(withLab?['TEO','LAB']:Object.keys(groups)).filter(k=>groups[k]?.length).map(comp=>`<div><div class="section-group-head">${componentBadge(comp)}</div>${groups[comp].map(sec=>{const key=getSectionKey(selectedMatForSlot,sec,sec._idx);const added=schedule.some(s=>s.sectionKey===key);return `<div class="section-card"><div class="section-head"><div><div style="font-size:14px;font-weight:900;color:#1e293b">${componentBadge(sec.component||'GEN')} · Grupo ${esc(sec.group||String(sec._idx+1).padStart(3,'0'))}${sec.nrc?` · NRC ${esc(sec.nrc)}`:''}</div><div class="section-sub">${esc(sec.teacher||'Profesor por asignar')} · ${methodLabel(sec.method)}</div></div><button class="section-add" onclick="addSection('${selectedMatForSlot}',${sec._idx})">${added?'Reemplazar':'Agregar'}</button></div><div class="section-lines">${sec.slots.map(sectionLine).join('')}</div></div>`;}).join('')}</div>`).join('');}
+function addSection(courseId,idx){const options=getScheduleOptions(courseId),sec=options[idx];if(!sec)return;const key=getSectionKey(courseId,sec,idx),comp=sec.component||'GEN';if(schedule.some(s=>s.sectionKey===key)){alert('Ese grupo ya está agregado al horario.');return;}const existing=schedule.filter(s=>s.id===courseId&&(s.component||'GEN')===comp);if(existing.length&&!confirm(`La materia "${getName(courseId)}" ya tiene ${componentBadge(comp).toLowerCase()} cargada. ¿Quieres reemplazarla?`))return;if(existing.length)schedule=schedule.filter(s=>!(s.id===courseId&&(s.component||'GEN')===comp));const fresh=(sec.slots||[]).map((slot,slotIdx)=>({id:courseId,name:getName(courseId),day:slot.day,start:slot.start,end:slot.end,room:slot.room||'',type:slot.type||'',teacher:sec.teacher||'',method:sec.method||'',group:sec.group||'',nrc:sec.nrc||'',component:comp,sectionKey:key,sectionIndex:idx,slotIndex:slotIdx}));schedule.push(...fresh);save();organizeSchedule(false);renderScheduler();}
+function timeToMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function detectConflicts(){const cs=[];for(let i=0;i<schedule.length;i++)for(let j=i+1;j<schedule.length;j++){const a=schedule[i],b=schedule[j];if(a.day!==b.day)continue;if(timeToMin(a.start)<timeToMin(b.end)&&timeToMin(a.end)>timeToMin(b.start))cs.push([i,j]);}return cs;}
+function renderCalendar(){const grid=document.getElementById('cal-grid');if(!grid)return;const cs=detectConflicts(),ci=new Set(cs.flat()),banner=document.getElementById('conflict-banner');if(cs.length){banner.style.display='flex';document.getElementById('conflict-text').textContent=`${cs.length} conflicto(s) detectado(s). Haz clic en un bloque para quitar la teoría o el laboratorio del grupo seleccionado.`;}else banner.style.display='none';let html='<div class="cal-head"></div>'+DAYS.map(d=>`<div class="cal-head">${d}</div>`).join('');HOURS.forEach(h=>{html+=`<div class="cal-time">${h}</div>`;DAYS.forEach((_,di)=>{let inner='';schedule.forEach((s,idx)=>{if(s.day!==di)return;const st=timeToMin(s.start),en=timeToMin(s.end),cs=timeToMin(h),ce=cs+60;if(st<ce&&en>cs){const pct=Math.max(0,(en-Math.max(st,cs))/(ce-cs))*100,top=Math.max(0,(st-cs)/(ce-cs))*100,col=COLORS[idx%COLORS.length],title=`${s.name}${s.component?` | ${componentBadge(s.component)}`:''}${s.group?` | Grupo ${s.group}`:''}${s.nrc?` | NRC ${s.nrc}`:''}${s.teacher?` | ${s.teacher}`:''}${s.room?` | Salón ${s.room}`:''}`;inner+=`<div class="class-block ${ci.has(idx)?'conflict-block':''}" style="top:${top}%;height:${pct}%;background:${col}22;color:${col};border-left:3px solid ${col}" onclick="removeSlot(${idx})" title="${esc(title)}"><div>${esc(s.name.length>18?s.name.slice(0,18)+'…':s.name)}</div><small>${esc([componentBadge(s.component),s.room].filter(Boolean).join(' · '))}</small></div>`;}});html+=`<div class="cal-cell">${inner}</div>`;});});grid.innerHTML=html;}
+function removeSlot(idx){const row=schedule[idx];if(!row)return;const key=row.sectionKey||`${row.id}-${row.component||'GEN'}-${row.day}-${row.start}-${row.end}`;const label=`${row.name}${row.component?` · ${componentBadge(row.component)}`:''}`;if(confirm(`¿Eliminar "${label}" del horario? Se retirarán todas sus franjas asociadas.`)){schedule=schedule.filter(s=>(s.sectionKey||`${s.id}-${s.component||'GEN'}-${s.day}-${s.start}-${s.end}`)!==key);save();renderScheduler();}}
+function renderSchedMeta(){const el=document.getElementById('sched-meta');if(!el)return;const uniqueIds=[...new Set(schedule.map(s=>s.id))],creds=uniqueIds.reduce((a,id)=>a+getCred(id),0),daysUsed=[...new Set(schedule.map(s=>s.day))].length,cf=detectConflicts().length;el.innerHTML=`<div class="sched-stat"><div class="ss-n">${creds}</div><div class="ss-l">Créditos</div></div><div class="sched-stat"><div class="ss-n">${uniqueIds.length}</div><div class="ss-l">Materias</div></div><div class="sched-stat"><div class="ss-n">${daysUsed}</div><div class="ss-l">Días usados</div></div><div class="sched-stat"><div class="ss-n" style="color:${cf?'var(--danger)':'var(--ok)'}">${cf}</div><div class="ss-l">Conflictos</div></div>`;}
+function clearSchedule(){if(confirm('¿Limpiar todo el horario?')){schedule=[];save();renderScheduler();}}
+function organizeSchedule(showAlert=true){schedule.sort((a,b)=>a.day-b.day||a.start.localeCompare(b.start)||a.name.localeCompare(b.name));save();renderScheduler();if(showAlert)alert('✅ Horario ordenado por día y hora.');}
+// ═══ EDITOR ═══
+function renderEditor(){
+  renderEditorList();
+}
+function getMatsForEditor(){
+  const q=document.getElementById('ed-search')?.value?.toLowerCase()||'';
+  const carFilter=document.getElementById('ed-car-filter')?.value||'all';
+  let mats=allMats().filter(m=>{
+    if(carFilter==='ibq'&&m.carrera!=='ibq')return false;
+    if(carFilter==='quf'&&m.carrera!=='quf')return false;
+    if(q&&!m.n.toLowerCase().includes(q)&&!m.id.toLowerCase().includes(q))return false;
+    return true;
+  });
+  return mats;
+}
+function renderEditorList(){
+  const list=document.getElementById('mat-edit-list');if(!list)return;
+  const mats=getMatsForEditor();
+  if(!mats.length){list.innerHTML='<div style="font-size:14px;color:#94a3b8;padding:1rem">Sin resultados.</div>';return;}
+  list.innerHTML=mats.map(m=>{
+    const cat=CAT_INFO[m.cat||'basica']||CAT_INFO.basica;
+    const s=status(m.id);
+    return`<div class="mat-edit-item ${editingMatId===m.id?'sel':''}" onclick="openEditMat('${m.id}')">
+      <span style="font-size:14px">${statusIcon(s)}</span>
+      <span style="flex:1;font-size:15px;font-weight:600">${m.n}</span>
+      <span style="font-size:11px;font-weight:800;padding:2px 6px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderScheduleEditorHtml(id){const sections=getRawScheduleOptions(id);if(!sections.length)return '<div style="font-size:14px;color:#94a3b8;padding:6px">Sin horarios cargados para esta materia.</div>';return sections.map((sec,secIdx)=>`<div class="editor-schedule-section"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div style="font-size:15px;font-weight:900;color:#1e293b">Grupo editable ${esc(sec.group||String(secIdx+1).padStart(3,'0'))}</div><button class="tiny-danger" onclick="removeScheduleOptionEditor('${id}',${secIdx})">Eliminar grupo</button></div><div class="editor-schedule-grid"><input class="form-input" placeholder="Grupo" value="${esc(sec.group||'')}" oninput="setScheduleOptionField('${id}',${secIdx},'group',this.value)"><input class="form-input" placeholder="NRC" value="${esc(sec.nrc||'')}" oninput="setScheduleOptionField('${id}',${secIdx},'nrc',this.value)"><input class="form-input" placeholder="Profesor" value="${esc(sec.teacher||'')}" oninput="setScheduleOptionField('${id}',${secIdx},'teacher',this.value)"><select class="form-select" onchange="setScheduleOptionField('${id}',${secIdx},'method',this.value)"><option value="PR"${(sec.method||'PR')==='PR'?' selected':''}>Presencial</option><option value="PR/CE"${sec.method==='PR/CE'?' selected':''}>Presencial / Curso E</option><option value="VR/S"${sec.method==='VR/S'?' selected':''}>Virtual sincrónico</option></select></div>${(sec.slots||[]).map((slot,slotIdx)=>`<div class="editor-slot-row"><select class="form-select" onchange="setScheduleSlotField('${id}',${secIdx},${slotIdx},'day',this.value)">${DAYS.map((d,dIdx)=>`<option value="${dIdx}"${Number(slot.day)===dIdx?' selected':''}>${d}</option>`).join('')}</select><input class="form-input" type="time" value="${slot.start}" oninput="setScheduleSlotField('${id}',${secIdx},${slotIdx},'start',this.value)"><input class="form-input" type="time" value="${slot.end}" oninput="setScheduleSlotField('${id}',${secIdx},${slotIdx},'end',this.value)"><input class="form-input" placeholder="Salón" value="${esc(slot.room||'')}" oninput="setScheduleSlotField('${id}',${secIdx},${slotIdx},'room',this.value)"><select class="form-select" onchange="setScheduleSlotField('${id}',${secIdx},${slotIdx},'type',this.value)"><option value="TEO"${(slot.type||'TEO')==='TEO'?' selected':''}>TEO</option><option value="LAB"${slot.type==='LAB'?' selected':''}>LAB</option><option value=""${!slot.type?' selected':''}>Sin tipo</option></select><button class="tiny-danger" onclick="removeScheduleSlotEditor('${id}',${secIdx},${slotIdx})">✕</button></div>`).join('')}<div style="display:flex;justify-content:flex-end"><button class="tiny-add" onclick="addScheduleSlotEditor('${id}',${secIdx})">+ Franja</button></div></div>`).join('');}
+function openEditMat(id){editingMatId=id;renderEditorList();const allM=allMats();const mat=allM.find(m=>m.id===id);if(!mat)return;const prereqs=PREREQS[id]||[];const otherMats=allM.filter(m=>m.id!==id&&!(PREREQS[m.id]||[]).includes(id));const wrap=document.getElementById('editor-form-wrap');wrap.innerHTML=`<div class="editor-form"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem"><div style="font-size:20px;font-weight:800">✏️ Editar materia</div><div style="font-size:13px;font-weight:700;color:#94a3b8">${esc(id)}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ed-name" value="${esc(mat.n)}"></div><div class="form-group"><label class="form-label">Créditos</label><input class="form-input" type="number" id="ed-cred" value="${mat.c}" min="1" max="20"></div><div class="form-group"><label class="form-label">Semestre</label><select class="form-select" id="ed-sem">${Array.from({length:10},(_,i)=>`<option value="${i+1}"${mat.sem===i+1?' selected':''}>${i+1}</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="ed-cat">${Object.entries(CAT_INFO).map(([k,v])=>`<option value="${k}"${(mat.cat||'basica')===k?' selected':''}>${v.label}</option>`).join('')}</select></div></div><div class="form-group"><label class="form-label">Prerrequisitos</label><div class="prereq-editor"><div id="prereq-list">${prereqs.map(p=>`<div class="prereq-item">📌 <span style="flex:1">${esc(getName(p))}</span><button class="prereq-del" onclick="removePrereq('${id}','${p}')">✕ Eliminar</button></div>`).join('')||'<div style="font-size:14px;color:#94a3b8;padding:6px">Sin prerrequisitos.</div>'}</div><div class="prereq-add-row"><select id="prereq-select"><option value="">— Agregar prerrequisito —</option>${otherMats.map(m=>`<option value="${m.id}">${esc(m.n)} (${m.carrera.toUpperCase()})</option>`).join('')}</select><button class="prereq-add-btn" onclick="addPrereq('${id}')">+ Agregar</button></div></div></div><div class="form-group"><label class="form-label">Horarios editables de la materia</label><div class="editor-schedule-wrap"><div class="sched-help" style="margin-bottom:.75rem">Aquí puedes cambiar días, horas, salón, tipo de franja y crear o borrar grupos completos. El constructor usará esta configuración.</div><div id="schedule-editor">${renderScheduleEditorHtml(id)}</div><div style="display:flex;justify-content:flex-end;margin-top:.75rem"><button class="tiny-add" onclick="addScheduleOptionEditor('${id}')">+ Nuevo grupo editable</button></div></div></div><div class="form-group"><label class="form-label">Cadena de prerrequisitos (en tiempo real)</label><div class="chain-viz" id="chain-viz">${buildChainViz(id)}</div></div><div class="editor-actions"><button class="btn-primary" onclick="saveMatEdit('${id}')">💾 Guardar cambios</button><button class="btn-danger" onclick="deleteMat('${id}')">🗑️ Eliminar materia</button><button class="btn-secondary" onclick="closeEditor()">Cancelar</button></div></div>`;}
+function ensureScheduleCourse(id){if(!Array.isArray(SCHEDULES[id]))SCHEDULES[id]=[];}
+function refreshScheduleEditor(id){const el=document.getElementById('schedule-editor');if(el)el.innerHTML=renderScheduleEditorHtml(id);}
+function addScheduleOptionEditor(id){ensureScheduleCourse(id);SCHEDULES[id].push({group:String((SCHEDULES[id].length+1)).padStart(3,'0'),nrc:'',teacher:'',method:'PR',slots:[{day:2,start:'08:00',end:'09:59',room:'',type:'TEO'}]});save();refreshScheduleEditor(id);renderScheduler();renderPlanner();}
+function removeScheduleOptionEditor(id,secIdx){ensureScheduleCourse(id);SCHEDULES[id].splice(secIdx,1);save();refreshScheduleEditor(id);renderScheduler();renderPlanner();}
+function addScheduleSlotEditor(id,secIdx){ensureScheduleCourse(id);(SCHEDULES[id][secIdx].slots||(SCHEDULES[id][secIdx].slots=[])).push({day:2,start:'08:00',end:'09:59',room:'',type:'TEO'});save();refreshScheduleEditor(id);renderScheduler();renderPlanner();}
+function removeScheduleSlotEditor(id,secIdx,slotIdx){ensureScheduleCourse(id);SCHEDULES[id][secIdx].slots.splice(slotIdx,1);save();refreshScheduleEditor(id);renderScheduler();renderPlanner();}
+function setScheduleOptionField(id,secIdx,field,val){ensureScheduleCourse(id);SCHEDULES[id][secIdx][field]=val;save();renderScheduler();renderPlanner();}
+function setScheduleSlotField(id,secIdx,slotIdx,field,val){ensureScheduleCourse(id);SCHEDULES[id][secIdx].slots[slotIdx][field]=field==='day'?parseInt(val):val;save();renderScheduler();renderPlanner();}
+function buildChainViz(id){
+  // Build chain from roots to this node
+  function getChain(tid,visited=new Set()){
+    if(visited.has(tid))return['⚠️ Ciclo detectado'];
+    visited.add(tid);
+    const prereqs=PREREQS[tid]||[];
+    if(!prereqs.length)return[`<div class="chain-node-viz">${getName(tid)}</div>`];
+    const parts=prereqs.map(p=>getChain(p,new Set(visited)));
+    return parts.flat().concat(['<div class="chain-arrow">↓</div>',`<div class="chain-node-viz" style="background:var(--ibq-l);border-color:var(--ibq)">${getName(tid)}</div>`]);
+  }
+  return getChain(id).join('');
+}
+function addPrereq(id){
+  const sel=document.getElementById('prereq-select');const val=sel.value;if(!val)return;
+  // Check circular
+  if(wouldCreateCycle(id,val)){showEditorError('⚠️ Dependencia circular detectada. No se puede agregar este prerrequisito.');return;}
+  if(!PREREQS[id])PREREQS[id]=[];
+  if(!PREREQS[id].includes(val)){PREREQS[id].push(val);save();openEditMat(id);showEditorSuccess('✅ Prerrequisito agregado.');}
+}
+function removePrereq(id,prereqId){
+  if(!PREREQS[id])return;PREREQS[id]=PREREQS[id].filter(p=>p!==prereqId);save();openEditMat(id);showEditorSuccess('✅ Prerrequisito eliminado.');
+}
+function wouldCreateCycle(from,to){
+  // DFS: would adding "to" as prereq of "from" create a cycle?
+  const visited=new Set();
+  function dfs(node){
+    if(node===from)return true;
+    if(visited.has(node))return false;
+    visited.add(node);
+    return(PREREQS[node]||[]).some(p=>dfs(p));
+  }
+  return dfs(to);
+}
+function saveMatEdit(id){const name=document.getElementById('ed-name').value.trim();const cred=parseInt(document.getElementById('ed-cred').value);const sem=parseInt(document.getElementById('ed-sem').value);const cat=document.getElementById('ed-cat').value;if(!name){showEditorError('El nombre es obligatorio.');return;}if(isNaN(cred)||cred<1){showEditorError('Los créditos deben ser ≥ 1.');return;}let found=false;[IBQ,QUF].forEach(pensum=>{pensum.forEach(s=>{const mat=s.m.find(m=>m.id===id);if(mat){mat.n=name;mat.c=cred;mat.cat=cat;found=true;if(s.sem!==sem){s.m=s.m.filter(m=>m.id!==id);const targetSem=pensum.find(x=>x.sem===sem);if(targetSem)targetSem.m.push({...mat,n:name,c:cred,cat});}}});});if(found){save();renderAll();openEditMat(id);showEditorSuccess('✅ Cambios guardados correctamente.');}else showEditorError('No se encontró la materia.');}
+
+function deleteMat(id){
+  if(!confirm(`¿Eliminar "${getName(id)}" del pensum? Esta acción no se puede deshacer.`))return;
+  [IBQ,QUF].forEach(p=>p.forEach(s=>{s.m=s.m.filter(m=>m.id!==id)}));
+  // Remove from prereqs
+  delete PREREQS[id];
+  Object.keys(PREREQS).forEach(k=>{PREREQS[k]=(PREREQS[k]||[]).filter(p=>p!==id)});
+  done.delete(id);save();editingMatId=null;
+  document.getElementById('editor-form-wrap').innerHTML=`<div class="editor-form"><div style="text-align:center;padding:3rem;color:#94a3b8;font-size:16px">Materia eliminada. Selecciona otra.</div></div>`;
+  renderEditorList();renderAll();
+}
+function startNewMat(){const id='mat_'+Date.now();let carrera=document.getElementById('ed-car-filter').value||'ibq';if(carrera==='all'){const choice=(prompt('¿En qué carrera quieres crear la materia? Escribe: ibq o quf', 'ibq')||'ibq').toLowerCase().trim();carrera=choice==='quf'?'quf':'ibq';}const newMat={id,n:'Nueva materia',c:3,cat:'basica'};const pensum=carrera==='quf'?QUF:IBQ;pensum[0].m.push(newMat);if(!Array.isArray(SCHEDULES[id]))SCHEDULES[id]=[];save();editingMatId=id;renderEditorList();openEditMat(id);}
+
+function closeEditor(){editingMatId=null;renderEditorList();document.getElementById('editor-form-wrap').innerHTML=`<div class="editor-form"><div style="text-align:center;padding:3rem;color:#94a3b8;font-size:16px">← Selecciona una materia para editar o crea una nueva</div></div>`;}
+function showEditorError(msg){const el=document.getElementById('editor-error');el.innerHTML=`<div class="error-banner">⚠️ ${msg}</div>`;el.style.display='block';setTimeout(()=>el.style.display='none',4000);}
+function showEditorSuccess(msg){const el=document.getElementById('editor-success');el.innerHTML=`<div class="success-banner">${msg}</div>`;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
+
+// ═══ IMPORT / EXPORT ═══
+function exportPensum(){const data={ibq:IBQ,quf:QUF,prereqs:PREREQS,schedules:SCHEDULES};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pensum_icesi.json';a.click();}
+
+function importPensum(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);const clean=sanitizePensumData(data);IBQ=clean.ibq;QUF=clean.quf;PREREQS=clean.prereqs;SCHEDULES=clean.schedules;save();renderAll();showEditorSuccess('✅ Pensum importado correctamente.');}catch(err){showEditorError('Error al importar: '+err.message);}};reader.readAsText(file);e.target.value='';}
+
+function resetPensum(){if(!confirm('¿Restaurar el pensum original? Se perderán todos los cambios del editor.'))return;IBQ=JSON.parse(JSON.stringify(DEFAULT_IBQ));QUF=JSON.parse(JSON.stringify(DEFAULT_QUF));PREREQS=JSON.parse(JSON.stringify(DEFAULT_PREREQS));SCHEDULES=JSON.parse(JSON.stringify(DEFAULT_SCHEDULES));plannerCart=[];schedule=[];save();renderAll();showEditorSuccess('✅ Pensum y horarios restaurados al original.');}
+
+// ═══ DISMISS TOOLTIP ═══
+document.addEventListener('click',e=>{if(!e.target.classList.contains('node'))document.getElementById('tooltip').style.display='none';});
+
+
+// ═══ V4.1 OVERRIDES: marca Icesi, planificación y semestre real ═══
+const HOMOLOGABLE_QUF_TARGETS=["quf_qg1","quf_log","quf_alg1","quf_ce1","quf_bio","quf_qg2","quf_cal1","quf_icf","quf_qo1","quf_ce2","quf_org","quf_eco","quf_calv","quf_fis","quf_bqm","quf_anq","quf_lid","quf_bioe","quf_der","quf_fisq1","quf_bcl","quf_qo2","quf_doe","quf_mic","quf_anato","quf_fisq2","quf_aninst","quf_salud","quf_biom","quf_farmt1","quf_farmcog","quf_farm1","quf_biofc","quf_eti","quf_biote","quf_farmt2","quf_ctrl","quf_farmas","quf_farm2","quf_cts","quf_eh1","quf_farmcl","quf_farmin","quf_pg1","quf_pe1","quf_asunto","quf_eh2","quf_eh3","quf_pg2","quf_pe2","quf_pe3","quf_prac"];
+let HOMOLOGATIONS=JSON.parse(localStorage.getItem('icesi_homologations')||'[{"id":"hom_quf_qg1","target":"quf_qg1","sources":["ibq_qg1"],"mode":"all","label":"Química general I y Lab."},{"id":"hom_quf_log","target":"quf_log","sources":["ibq_log"],"mode":"all","label":"Lógica"},{"id":"hom_quf_alg1","target":"quf_alg1","sources":["ibq_alg1"],"mode":"all","label":"Álgebra"},{"id":"hom_quf_ce1","target":"quf_ce1","sources":["ibq_ce1"],"mode":"all","label":"Comunicación escrita I"},{"id":"hom_quf_cal1","target":"quf_cal1","sources":["ibq_cal1"],"mode":"all","label":"Cálculo una variable"},{"id":"hom_quf_qo1","target":"quf_qo1","sources":["ibq_qo1"],"mode":"all","label":"Química orgánica I"},{"id":"hom_quf_ce2","target":"quf_ce2","sources":["ibq_ce2"],"mode":"all","label":"Comunicación oral escrita II"},{"id":"hom_quf_org","target":"quf_org","sources":["ibq_org"],"mode":"all","label":"Organizaciones"},{"id":"hom_quf_eco","target":"quf_eco","sources":["ibq_eco"],"mode":"all","label":"Economía"},{"id":"hom_quf_bqm","target":"quf_bqm","sources":["ibq_bqm"],"mode":"all","label":"Bioquímica"},{"id":"hom_quf_bioe","target":"quf_bioe","sources":["ibq_bioe"],"mode":"all","label":"Bioestadística"},{"id":"hom_quf_biom","target":"quf_biom","sources":["ibq_biom"],"mode":"all","label":"Biología molecular"},{"id":"hom_quf_der","target":"quf_der","sources":["ibq_der"],"mode":"all","label":"Derecho"},{"id":"hom_quf_lid","target":"quf_lid","sources":["ibq_lid"],"mode":"all","label":"Liderazgo"},{"id":"hom_quf_eti","target":"quf_eti","sources":["ibq_eti"],"mode":"all","label":"Ética"},{"id":"hom_quf_cts","target":"quf_cts","sources":["ibq_cts"],"mode":"all","label":"CTS"},{"id":"hom_quf_fisq1","target":"quf_fisq1","sources":["ibq_fisq","ibq_term1"],"mode":"all","label":"Fisicoquímica I = Fund. fisicoquímica + Termodinámica I"},{"id":"hom_quf_fisq2","target":"quf_fisq2","sources":["ibq_term2","ibq_bioc"],"mode":"all","label":"Fisicoquímica II = Termodinámica II + Biocatálisis"},{"id":"hom_quf_mic","target":"quf_mic","sources":["ibq_mic"],"mode":"all","label":"Microbiología"},{"id":"hom_quf_biote","target":"quf_biote","sources":["ibq_biom","ibq_mic"],"mode":"all","label":"Biotecnología"},{"id":"hom_quf_pg1","target":"quf_pg1","sources":["ibq_pg1"],"mode":"all","label":"Proyecto I"},{"id":"hom_quf_pg2","target":"quf_pg2","sources":["ibq_pg2"],"mode":"all","label":"Proyecto II"},{"id":"hom_quf_prac","target":"quf_prac","sources":["ibq_prac"],"mode":"all","label":"Práctica"},{"id":"hom_quf_bio","target":"quf_bio","sources":["ibq_bcl"],"mode":"all","label":"Biología general"},{"id":"hom_quf_calv","target":"quf_calv","sources":["ibq_calv"],"mode":"all","label":"Cálculo CN"},{"id":"hom_quf_fis","target":"quf_fis","sources":["ibq_fis"],"mode":"all","label":"Física"},{"id":"hom_quf_eh1","target":"quf_eh1","sources":["ibq_eh1","ibq_eh2","ibq_eh3","ibq_pe1","ibq_pe2","ibq_eti","ibq_cts"],"mode":"any","label":"Electiva QUF homologable con electiva IBQ"},{"id":"hom_quf_eh2","target":"quf_eh2","sources":["ibq_eh1","ibq_eh2","ibq_eh3","ibq_pe1","ibq_pe2","ibq_eti","ibq_cts"],"mode":"any","label":"Electiva QUF homologable con electiva IBQ"},{"id":"hom_quf_eh3","target":"quf_eh3","sources":["ibq_eh1","ibq_eh2","ibq_eh3","ibq_pe1","ibq_pe2","ibq_eti","ibq_cts"],"mode":"any","label":"Electiva QUF homologable con electiva IBQ"},{"id":"hom_quf_pe1","target":"quf_pe1","sources":["ibq_eh1","ibq_eh2","ibq_eh3","ibq_pe1","ibq_pe2","ibq_eti","ibq_cts"],"mode":"any","label":"Electiva QUF homologable con electiva IBQ"},{"id":"hom_quf_pe2","target":"quf_pe2","sources":["ibq_eh1","ibq_eh2","ibq_eh3","ibq_pe1","ibq_pe2","ibq_eti","ibq_cts"],"mode":"any","label":"Electiva QUF homologable con electiva IBQ"},{"id":"hom_quf_pe3","target":"quf_pe3","sources":["ibq_eh1","ibq_eh2","ibq_eh3","ibq_pe1","ibq_pe2","ibq_eti","ibq_cts"],"mode":"any","label":"Electiva QUF homologable con electiva IBQ"}]');
+let semesterPlans=JSON.parse(localStorage.getItem('icesi_semester_plans')||'[]'); if(!Array.isArray(semesterPlans))semesterPlans=[];
+Object.assign(PREREQS,{"quf_qo1":["quf_qg1"],"quf_qg2":["quf_qg1"],"quf_ce2":["quf_ce1"],"quf_cal1":["quf_alg1"],"quf_fis":["quf_cal1"],"quf_bqm":["quf_qo1"],"quf_anq":["quf_qg2","quf_alg1"],"quf_calv":["quf_cal1"],"quf_bcl":["quf_bqm"],"quf_fisq1":["quf_calv","quf_fis"],"quf_fisq2":["quf_fisq1"],"ibq_qo1":["ibq_qg1"],"ibq_cal1":["ibq_alg1"],"ibq_bqm":["ibq_qo1"],"ibq_fisq":["ibq_qg1","ibq_cal1"],"ibq_term1":["ibq_fisq","ibq_eqdif"],"ibq_term2":["ibq_term1","ibq_mic"],"ibq_bioc":["ibq_bqm"]});
+const _baseSave=save; save=function(){_baseSave();localStorage.setItem('icesi_homologations',JSON.stringify(HOMOLOGATIONS));localStorage.setItem('icesi_semester_plans',JSON.stringify(semesterPlans));};
+const _baseLoad=loadSaved; loadSaved=function(){_baseLoad();const h=localStorage.getItem('icesi_homologations');if(h)HOMOLOGATIONS=JSON.parse(h);const sp=localStorage.getItem('icesi_semester_plans');if(sp)semesterPlans=JSON.parse(sp);Object.assign(PREREQS,{"quf_qo1":["quf_qg1"],"quf_qg2":["quf_qg1"],"quf_ce2":["quf_ce1"],"quf_cal1":["quf_alg1"],"quf_fis":["quf_cal1"],"quf_bqm":["quf_qo1"],"quf_anq":["quf_qg2","quf_alg1"],"quf_calv":["quf_cal1"],"quf_bcl":["quf_bqm"],"quf_fisq1":["quf_calv","quf_fis"],"quf_fisq2":["quf_fisq1"],"ibq_qo1":["ibq_qg1"],"ibq_cal1":["ibq_alg1"],"ibq_bqm":["ibq_qo1"],"ibq_fisq":["ibq_qg1","ibq_cal1"],"ibq_term1":["ibq_fisq","ibq_eqdif"],"ibq_term2":["ibq_term1","ibq_mic"],"ibq_bioc":["ibq_bqm"]});};
+function isHomologatedByRule(id){return HOMOLOGABLE_QUF_TARGETS.includes(id)&&(HOMOLOGATIONS||[]).some(r=>r.target===id&&(r.sources||[]).length&&((r.mode==='any')?r.sources.some(src=>done.has(resolveId(src))||done.has(src)):r.sources.every(src=>done.has(resolveId(src))||done.has(src))));}
+isDone=function(id){return done.has(resolveId(id))||isHomologatedByRule(id)};
+function getHomRulesForTarget(id){return HOMOLOGABLE_QUF_TARGETS.includes(id)?(HOMOLOGATIONS||[]).filter(r=>r.target===id):[];}
+function homStatus(id){if(!HOMOLOGABLE_QUF_TARGETS.includes(id))return 'exclusive';const r=getHomRulesForTarget(id);return r.length?(isHomologatedByRule(id)?'homologated':'compound'):'exclusive';}
+function homBadgeFor(id){const h=homStatus(id);return h==='homologated'?'<span class="meta-chip hom">Homologada</span>':h==='compound'?'<span class="meta-chip shared">Homologable</span>':'';}
+function nodeBadgesForCourse(m){const arr=[];const h=homStatus(m.id);if(h!=='exclusive')arr.push('<span class="node-badge">Hom.</span>');if(h==='homologated')arr.push('<span class="node-badge">Hecha</span>');return arr.join('');}
+function plannedCurrentSem(){if(!semesterPlans.length)return detectCurrentSemByCourses();let current=semesterPlans.findIndex(s=>s.status==='current');if(current>=0)return Math.min(current+1,10);let lastDone=-1;semesterPlans.forEach((s,i)=>{if(s.status==='done')lastDone=i;});return Math.min(Math.max(lastDone+2,1),10);}
+function detectCurrentSemByCourses(){let m=0;allMats().forEach(x=>{if(done.has(resolveId(x.id))&&x.sem>m)m=x.sem;});return Math.min(Math.max(m+1,1),10);}
+detectCurrentSem=function(){return plannedCurrentSem();};
+function normalizeSemesterPlans(){if(!semesterPlans.length)semesterPlans=Array.from({length:10},(_,i)=>({label:'Semestre '+(i+1),status:i===0?'current':'planned',courses:[],note:''}));if(window.activeSemesterIndex===undefined)window.activeSemesterIndex=0;if(window.semesterPickerOpen===undefined)window.semesterPickerOpen=false;if(!window.semesterPickFilter)window.semesterPickFilter='unseen';}
+function uniqueCoursesForSelect(){const seen=new Set(),arr=[];allMats().forEach(m=>{const id=resolveId(m.id);if(!seen.has(id)){seen.add(id);arr.push({...m,id});}});return arr.sort((a,b)=>a.sem-b.sem||a.n.localeCompare(b.n));}
+function semesterCourseIds(i){normalizeSemesterPlans();return new Set((semesterPlans[i]?.courses||[]).map(c=>c.id));}
+function semesterCredits(i){return (semesterPlans[i]?.courses||[]).reduce((a,c)=>a+getCred(c.id),0);}
+function renderSemesterPickerGrouped(active,ids){const pool=uniqueCoursesForSelect().filter(m=>{const st=status(m.id),sel=ids.has(m.id);if(window.semesterPickFilter==='selected')return sel;if(window.semesterPickFilter==='avail')return sel||(!isDone(m.id)&&(st==='avail'||st==='free'));if(window.semesterPickFilter==='unseen')return sel||!isDone(m.id);return true;});const grouped={};pool.forEach(m=>(grouped[m.sem]||(grouped[m.sem]=[])).push(m));return Object.keys(grouped).sort((a,b)=>a-b).map(sem=>`<div class="pensum-semester-group"><div class="pensum-semester-title"><span>Semestre ${sem}</span><span>${grouped[sem].length} materia(s)</span></div><div class="pensum-picker-grid">${grouped[sem].map(m=>{const sel=ids.has(m.id),st=status(m.id);return `<button type="button" class="pensum-pick-chip ${sel?'sel':isDone(m.id)?'done':(st==='avail'||st==='free')?'avail':st==='blocked'?'blocked':''} ${homStatus(m.id)!=='exclusive'?'shared':''}" onclick="toggleSemesterCourse(${active},'${m.id}')"><span>${sel?'✓':'+'}</span>${esc(m.n)} <span class="meta-chip">S${m.sem}</span><span class="meta-chip">${m.c} cr.</span></button>`;}).join('')}</div></div>`).join('')||'<div class="semester-empty">No hay materias para este filtro.</div>';}
+function renderSemesterRoute(){const cont=document.getElementById('semester-route-list');if(!cont)return;normalizeSemesterPlans();const active=Math.min(window.activeSemesterIndex||0,semesterPlans.length-1),sem=semesterPlans[active],ids=semesterCourseIds(active),courses=sem.courses||[];const tabs=`<div class="semester-tabs">${semesterPlans.map((s,i)=>`<button class="semester-tab ${i===active?'on':''}" onclick="openSemesterPlan(${i})"><span>${esc(s.label||('Semestre '+(i+1)))}</span><small>${(s.courses||[]).length} materias · ${semesterCredits(i)} cr.</small></button>`).join('')}</div>`;const selected=courses.length?`<div class="selected-course-chips">${courses.map((c,ci)=>`<button class="selected-course-chip" onclick="removeSemesterCourse(${active},${ci})">${esc(getName(c.id))} <span class="meta-chip">${getCred(c.id)} cr.</span> ×</button>`).join('')}</div>`:'<div class="semester-empty">Abre “Seleccionar desde el pensum” y elige materias.</div>';const picker=`<details class="semester-picker-details" ${window.semesterPickerOpen?'open':''} ontoggle="window.semesterPickerOpen=this.open"><summary class="semester-picker-summary">Seleccionar desde el pensum</summary><div class="semester-picker-toolbar"><div><div class="semester-section-title" style="margin:0 0 4px">Materias ordenadas por semestre</div><div class="semester-route-help">Al terminar, usa “Listo, cerrar selector”.</div></div><div class="semester-picker-filters"><button class="mini-pill ${window.semesterPickFilter==='unseen'?'on':''}" onclick="setSemesterPickFilter('unseen')">No vistas</button><button class="mini-pill ${window.semesterPickFilter==='avail'?'on':''}" onclick="setSemesterPickFilter('avail')">Disponibles</button><button class="mini-pill ${window.semesterPickFilter==='selected'?'on':''}" onclick="setSemesterPickFilter('selected')">Seleccionadas</button><button class="mini-pill ${window.semesterPickFilter==='all'?'on':''}" onclick="setSemesterPickFilter('all')">Todo</button></div></div>${renderSemesterPickerGrouped(active,ids)}<div class="semester-picker-footer"><button class="btn-primary" onclick="closeSemesterPicker()">Listo, cerrar selector</button></div></details>`;cont.innerHTML=`${tabs}<div class="semester-workspace"><div class="semester-work-head"><div><label class="form-label">Nombre</label><input class="form-input" value="${esc(sem.label)}" oninput="updateSemesterPlan(${active},'label',this.value)"></div><div><label class="form-label">Estado</label><select class="form-select" onchange="updateSemesterPlan(${active},'status',this.value)"><option value="done" ${sem.status==='done'?'selected':''}>Cursado</option><option value="current" ${sem.status==='current'?'selected':''}>Actual</option><option value="planned" ${sem.status==='planned'?'selected':''}>Planeado</option></select></div><div><label class="form-label">Promedio</label><input class="form-input" value="${esc(sem.note||'')}" oninput="updateSemesterPlan(${active},'note',this.value)"></div><button class="btn-primary" onclick="applySemesterDone(${active})">Marcar como cursadas</button></div><div class="semester-summary"><span class="meta-chip">${courses.length} materias</span><span class="meta-chip">${semesterCredits(active)} cr.</span><span class="meta-chip ${sem.status==='done'?'ok':'warn'}">${sem.status==='done'?'Cursado':sem.status==='current'?'Actual':'Planeado'}</span></div><div class="semester-section-title">Materias de este semestre</div>${selected}<details><summary class="soft-btn" style="display:inline-flex;margin-top:.75rem">Notas opcionales</summary><div class="semester-grade-grid">${courses.map((c,ci)=>`<div class="semester-grade-item"><strong>${esc(getName(c.id))}</strong><input class="form-input" placeholder="Nota" value="${esc(c.grade||'')}" oninput="updateSemesterCourse(${active},${ci},'grade',this.value)"></div>`).join('')}</div></details><div class="semester-quick-actions"><button class="btn-secondary" onclick="clearSemesterCourses(${active})">Vaciar semestre</button><button class="btn-secondary" onclick="addSemesterPlan()">+ Otro semestre</button></div>${picker}</div>`;}
+function openSemesterPlan(i){window.activeSemesterIndex=i;window.semesterPickerOpen=false;renderSemesterRoute();}
+function setSemesterPickFilter(f){window.semesterPickFilter=f;window.semesterPickerOpen=true;renderSemesterRoute();}
+function closeSemesterPicker(){window.semesterPickerOpen=false;renderSemesterRoute();}
+function addSemesterPlan(){normalizeSemesterPlans();semesterPlans.push({label:'Semestre '+(semesterPlans.length+1),status:'planned',courses:[],note:''});window.activeSemesterIndex=semesterPlans.length-1;save();renderSemesterRoute();}
+function updateSemesterPlan(i,f,v){normalizeSemesterPlans();semesterPlans[i][f]=v;save();renderAll();}
+function toggleSemesterCourse(i,id){normalizeSemesterPlans();const l=semesterPlans[i].courses||(semesterPlans[i].courses=[]),pos=l.findIndex(c=>c.id===id);pos>=0?l.splice(pos,1):l.push({id,grade:''});window.semesterPickerOpen=true;save();renderSemesterRoute();}
+function updateSemesterCourse(si,ci,f,v){semesterPlans[si].courses[ci][f]=v;save();}
+function removeSemesterCourse(si,ci){semesterPlans[si].courses.splice(ci,1);save();renderSemesterRoute();}
+function clearSemesterCourses(i){if(confirm('¿Vaciar las materias de este semestre?')){semesterPlans[i].courses=[];save();renderSemesterRoute();}}
+function applySemesterDone(i){normalizeSemesterPlans();(semesterPlans[i].courses||[]).forEach(c=>done.add(resolveId(c.id)));semesterPlans[i].status='done';save();renderAll();}
+const _renderAll=renderAll;renderAll=function(){renderNav();renderDash();renderPensum();renderTree();renderPlanner();renderSemesterRoute();renderScheduler();if(adminMode)renderEditor();};
+
+
+// ═══ RESTORE MAP FROM V4 UPLOADED VERSION ═══
+function getHomRulesForSource(id){return (HOMOLOGATIONS||[]).filter(r=>(typeof HOMOLOGABLE_QUF_TARGETS==='undefined'||HOMOLOGABLE_QUF_TARGETS.includes(r.target))&&(r.sources||[]).includes(id));}
+function isSharedCourse(id){return homStatus(id)!=='exclusive'||!!(SHARED&&SHARED[id]);}
+function getSharedPair(id){const rid=resolveId(id);const qid=Object.keys(SHARED||{}).find(k=>SHARED[k]===rid)||(SHARED&&SHARED[id]?id:null);const ibqid=(SHARED&&SHARED[id])||rid;return qid?{ibq:ibqid,quf:qid}:null;}
+function componentBadgesForCourse(id){const need=courseComponentsNeeded(id);let html='';if(need.needTeo)html+='<span class="component-pill teo">Teoría</span>';if(need.needLab)html+='<span class="component-pill lab">Lab</span>';return html;}
+
+function renderTree(){
+  const canvas=document.getElementById('skill-canvas');const svg=document.getElementById('edge-svg');if(!canvas)return;
+  if(!document.getElementById('map-detail-overlay')){const ov=document.createElement('div');ov.id='map-detail-overlay';ov.className='map-detail-overlay';document.body.appendChild(ov);}canvas.querySelectorAll('.node,.sem-map-label').forEach(n=>n.remove());svg.innerHTML='';
+  let mats=[];if(treeFilter==='ibq'){IBQ.forEach(s=>s.m.forEach(m=>mats.push({...m,sem:s.sem,carrera:'ibq'})));}else if(treeFilter==='quf'){QUF.forEach(s=>s.m.forEach(m=>mats.push({...m,sem:s.sem,carrera:'quf'})));}else{IBQ.forEach(s=>s.m.forEach(m=>mats.push({...m,sem:s.sem,carrera:'ibq'})));QUF.forEach(s=>s.m.forEach(m=>{if(!SHARED[m.id])mats.push({...m,sem:s.sem,carrera:'quf'});}));}
+  const nW=170,nH=98,colW=215,rowH=128,left=30,top=70,posMap={};
+  for(let sem=1;sem<=10;sem++){const label=document.createElement('div');label.className='sem-map-label';label.style.left=(left+(sem-1)*colW)+'px';label.textContent='Semestre '+sem;canvas.appendChild(label);const semMats=mats.filter(m=>m.sem===sem).sort((a,b)=>{const aa=homStatus(a.id)!=='exclusive'?0:(a.carrera==='ibq'?1:2),bb=homStatus(b.id)!=='exclusive'?0:(b.carrera==='ibq'?1:2);return aa-bb||a.n.localeCompare(b.n);});semMats.forEach((m,idx)=>{posMap[m.id]={x:left+(sem-1)*colW,y:top+idx*rowH};});}
+  const focusIds=new Set();if(window.selectedMapMat){focusIds.add(window.selectedMapMat);(PREREQS[window.selectedMapMat]||[]).forEach(p=>focusIds.add(p));Object.entries(PREREQS).forEach(([child,prs])=>{if((prs||[]).includes(window.selectedMapMat))focusIds.add(child);});getHomRulesForTarget(window.selectedMapMat).forEach(r=>(r.sources||[]).forEach(s=>focusIds.add(s)));getHomRulesForSource(window.selectedMapMat).forEach(r=>focusIds.add(r.target));}
+  let maxX=0,maxY=0;mats.forEach(m=>{const pos=posMap[m.id];if(!pos)return;const s=status(m.id);let cls='node-blocked';if(s==='done')cls='node-done';else if(homStatus(m.id)!=='exclusive')cls='node-shared';else if(s==='avail'||s==='free')cls=m.carrera==='quf'?'node-quf':'node-avail';const node=document.createElement('div');node.className=`node ${cls} ${window.selectedMapMat===m.id?'node-selected':''} ${window.selectedMapMat&&!focusIds.has(m.id)?'node-dim':'node-focus'}`;node.style.cssText=`left:${pos.x}px;top:${pos.y}px;width:${nW}px`;node.innerHTML=`<div class="node-title">${esc(m.n)}</div><div class="node-badges"><span class="node-badge">${m.c} cr.</span>${nodeBadgesForCourse(m)}</div>`;node.onclick=()=>{window.selectedMapMat=m.id;renderTree();showMapDetail(m.id);};canvas.appendChild(node);maxX=Math.max(maxX,pos.x+nW+50);maxY=Math.max(maxY,pos.y+nH+50);});
+  maxX=Math.max(maxX,left+10*colW+80);maxY=Math.max(maxY,820);svg.setAttribute('width',maxX);svg.setAttribute('height',maxY);canvas.style.cssText=`position:relative;min-width:${maxX}px;min-height:${maxY}px`;
+  mats.forEach(m=>{const pos=posMap[m.id];if(!pos)return;(PREREQS[m.id]||[]).forEach(pId=>{if(!window.selectedMapMat)return;const pp=posMap[pId];if(!pp)return;const isFocus=(m.id===window.selectedMapMat||pId===window.selectedMapMat);if(!isFocus)return;const x1=pp.x+nW,y1=pp.y+nH/2,x2=pos.x,y2=pos.y+nH/2,mx=(x1+x2)/2,stroke=pId===window.selectedMapMat?'#d97706':(isDone(pId)?'#4ade80':'#2563eb');svg.innerHTML+=`<path class="edge-focus" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="${stroke}" stroke-width="2.5"/>`;});});
+}
+function showMapDetail(id){const m=getMatById(id),ov=document.getElementById('map-detail-overlay');if(!m||!ov)return;const s=status(id),pre=PREREQS[id]||[],unlock=allMats().filter(x=>(PREREQS[x.id]||[]).includes(id)),rules=getHomRulesForTarget(id),sourceRules=getHomRulesForSource(id),pair=getSharedPair(id);const homHtml=rules.length?rules.map(r=>`<div class="detail-item"><strong>${esc(getName(r.target))}</strong><br>${(r.sources||[]).map(src=>`${isDone(src)?'✅':'○'} ${esc(getName(src))}`).join(r.mode==='any'?' / ':' + ')}<br><span style="font-size:13px;color:#64748b">${esc(r.label||'Regla editable')}</span></div>`).join(''):pair?`<div class="detail-item"><strong>IBQ:</strong> ${esc(getName(pair.ibq))}<br><strong>QUF:</strong> ${esc(getName(pair.quf))}</div>`:'<div class="detail-item">No homologable según la lista definida.</div>';const unlockHom=sourceRules.length?`<div class="detail-block"><div class="detail-block-title">También ayuda a homologar</div><div class="detail-list">${sourceRules.map(r=>`<div class="detail-item">${esc(getName(r.target))}</div>`).join('')}</div></div>`:'';ov.innerHTML=`<div class="map-detail-head"><div class="map-detail-title">${esc(m.n)}</div><button class="map-detail-close" onclick="hideMapDetail()">×</button></div><div class="detail-meta"><span class="meta-chip ${getMatStatusClass(id)}">${statusLabel(s)}</span><span class="meta-chip">${m.carrera.toUpperCase()} · S${m.sem}</span><span class="meta-chip">${m.c} cr.</span>${homBadgeFor(id)}${componentBadgesForCourse(id)}</div><div class="detail-block"><div class="detail-block-title">Prerrequisitos</div><div class="detail-list">${pre.length?pre.map(p=>`<div class="detail-item">${esc(getName(p))} ${isDone(p)?'<span class="meta-chip ok">cumplido</span>':'<span class="meta-chip bad">pendiente</span>'}</div>`).join(''):'<div class="detail-item">Sin prerrequisitos</div>'}</div></div><div class="detail-block"><div class="detail-block-title">Desbloquea</div><div class="detail-list">${unlock.length?unlock.map(u=>`<div class="detail-item">${esc(u.n)}</div>`).join(''):'<div class="detail-item">No desbloquea materias registradas</div>'}</div></div><div class="detail-block"><div class="detail-block-title">Homologación</div><div class="detail-list">${homHtml}</div></div>${unlockHom}<div class="detail-actions"><button class="btn-primary" onclick="toggleDone('${id}')">${isDone(id)?'Desmarcar cursada':'Marcar cursada'}</button><button class="btn-secondary" onclick="hideMapDetail()">Cerrar</button></div>`;ov.classList.add('on');}
+function hideMapDetail(){const ov=document.getElementById('map-detail-overlay');if(ov)ov.classList.remove('on');window.selectedMapMat=null;renderTree();}
+
+
+// ═══ CLOUD USERS FOR GITHUB PAGES: Firebase Auth + Firestore ═══
+// 1) Crea un proyecto en Firebase.
+// 2) Activa Authentication > Email/Password.
+// 3) Activa Firestore.
+// 4) Pega aquí la configuración web de Firebase.
+const FIREBASE_CONFIG = {
+  apiKey: "PEGAR_API_KEY",
+  authDomain: "PEGAR_PROJECT_ID.firebaseapp.com",
+  projectId: "PEGAR_PROJECT_ID",
+  storageBucket: "PEGAR_PROJECT_ID.appspot.com",
+  messagingSenderId: "PEGAR_SENDER_ID",
+  appId: "PEGAR_APP_ID"
+};
+const CLOUD_COLLECTIONS = { global: 'global', users: 'users', admins: 'admins' };
+let cloudReady=false, cloudConfigured=false, cloudUser=null, cloudIsAdmin=false, cloudDb=null, cloudAuth=null;
+let cloudFns={}, cloudUnsubGlobal=null, cloudUnsubUser=null, cloudSaveTimer=null, cloudGlobalTimer=null, cloudApplying=false;
+function firebaseConfigured(){return FIREBASE_CONFIG.apiKey && !String(FIREBASE_CONFIG.apiKey).startsWith('PEGAR_') && FIREBASE_CONFIG.projectId && !String(FIREBASE_CONFIG.projectId).startsWith('PEGAR_');}
+function renderAuthBox(msg){
+  const box=document.getElementById('auth-box'); if(!box)return;
+  if(!cloudConfigured){box.innerHTML='<span class="auth-pill warn">Modo local</span><button class="auth-btn" onclick="showFirebaseSetupHelp()">Configurar nube</button>';return;}
+  if(!cloudReady){box.innerHTML='<span class="auth-pill warn">Conectando nube…</span>';return;}
+  if(!cloudUser){box.innerHTML='<span class="auth-pill warn">Sin perfil</span><button class="auth-btn primary" onclick="cloudRegister()">Crear perfil</button><button class="auth-btn" onclick="cloudLogin()">Entrar</button>';return;}
+  const name=cloudUser.displayName||cloudUser.email||'Perfil';
+  box.innerHTML=`<span class="auth-pill ok">${esc(name)}</span>${cloudIsAdmin?'<span class="auth-pill admin">Admin global</span><button class="auth-btn primary" onclick="publishGlobalNow()">Publicar global</button>':''}<button class="auth-btn danger" onclick="cloudLogout()">Salir</button>`;
+  if(msg) console.log('[Cloud]',msg);
+}
+function showFirebaseSetupHelp(){
+  alert('Para que cada usuario tenga perfil en GitHub Pages necesitas Firebase:\n\n1. Firebase Console > crear proyecto.\n2. Authentication > Email/Password > Enable.\n3. Firestore Database > crear base.\n4. Project settings > Web app > copiar firebaseConfig.\n5. Pegar los valores en FIREBASE_CONFIG dentro del HTML.\n6. Pegar las reglas de firestore.rules que te entregué.');
+}
+function profileState(){return {done:[...done],schedule,plannerCart,semesterPlans,updatedAt:Date.now()};}
+function globalState(){return {ibq:IBQ,quf:QUF,prereqs:PREREQS,schedules:SCHEDULES,homologations:HOMOLOGATIONS,updatedAt:Date.now(),schema:'icesi-academic-map-v1'};}
+function applyProfileState(data){if(!data||cloudApplying)return;cloudApplying=true;try{done=new Set(Array.isArray(data.done)?data.done:[]);schedule=Array.isArray(data.schedule)?data.schedule:[];plannerCart=Array.isArray(data.plannerCart)?data.plannerCart:[];semesterPlans=Array.isArray(data.semesterPlans)?data.semesterPlans:[];localStorage.setItem('icesi_done',JSON.stringify([...done]));localStorage.setItem('icesi_sched',JSON.stringify(schedule));localStorage.setItem('icesi_planner_cart',JSON.stringify(plannerCart));localStorage.setItem('icesi_semester_plans',JSON.stringify(semesterPlans));renderAll();}finally{cloudApplying=false;}}
+function applyGlobalState(data){if(!data||cloudApplying)return;cloudApplying=true;try{if(Array.isArray(data.ibq))IBQ=data.ibq;if(Array.isArray(data.quf))QUF=data.quf;if(data.prereqs&&typeof data.prereqs==='object')PREREQS=data.prereqs;if(data.schedules&&typeof data.schedules==='object')SCHEDULES=data.schedules;if(Array.isArray(data.homologations))HOMOLOGATIONS=data.homologations;localStorage.setItem('icesi_ibq',JSON.stringify(IBQ));localStorage.setItem('icesi_quf',JSON.stringify(QUF));localStorage.setItem('icesi_prereqs',JSON.stringify(PREREQS));localStorage.setItem('icesi_schedule_catalog',JSON.stringify(SCHEDULES));localStorage.setItem('icesi_homologations',JSON.stringify(HOMOLOGATIONS));renderAll();}finally{cloudApplying=false;}}
+const localSaveOriginal=save;
+save=function(){
+  localSaveOriginal();
+  if(!cloudReady||!cloudUser||cloudApplying)return;
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer=setTimeout(()=>saveProfileCloud(),450);
+  if(cloudIsAdmin){clearTimeout(cloudGlobalTimer);cloudGlobalTimer=setTimeout(()=>saveGlobalCloud(false),900);}
+};
+async function saveProfileCloud(){if(!cloudReady||!cloudUser)return;try{await cloudFns.setDoc(cloudFns.doc(cloudDb,CLOUD_COLLECTIONS.users,cloudUser.uid),profileState(),{merge:true});}catch(e){console.warn('No se pudo guardar perfil:',e);}}
+async function saveGlobalCloud(showAlert=true){if(!cloudReady||!cloudUser||!cloudIsAdmin)return;try{await cloudFns.setDoc(cloudFns.doc(cloudDb,CLOUD_COLLECTIONS.global,'appState'),globalState(),{merge:true});if(showAlert)alert('Cambios globales publicados. Se aplicarán a todos los usuarios conectados.');}catch(e){console.warn('No se pudo publicar global:',e);if(showAlert)alert('No se pudo publicar global. Revisa reglas de Firestore/admin.');}}
+async function publishGlobalNow(){await saveGlobalCloud(true);}
+async function cloudRegister(){
+  if(!cloudReady)return showFirebaseSetupHelp();
+  const email=prompt('Correo para crear perfil:'); if(!email)return;
+  const pass=prompt('Contraseña mínimo 6 caracteres:'); if(!pass)return;
+  const name=prompt('Nombre visible:', email.split('@')[0])||email.split('@')[0];
+  try{const cred=await cloudFns.createUserWithEmailAndPassword(cloudAuth,email,pass);await cloudFns.updateProfile(cred.user,{displayName:name});await cloudFns.setDoc(cloudFns.doc(cloudDb,CLOUD_COLLECTIONS.users,cred.user.uid),{...profileState(),displayName:name,email,createdAt:Date.now()},{merge:true});}
+  catch(e){alert('No se pudo crear el perfil: '+e.message);}
+}
+async function cloudLogin(){
+  if(!cloudReady)return showFirebaseSetupHelp();
+  const email=prompt('Correo:'); if(!email)return;
+  const pass=prompt('Contraseña:'); if(!pass)return;
+  try{await cloudFns.signInWithEmailAndPassword(cloudAuth,email,pass);}catch(e){alert('No se pudo iniciar sesión: '+e.message);}
+}
+async function cloudLogout(){try{await cloudFns.signOut(cloudAuth);}catch(e){console.warn(e);}}
+async function startCloud(){
+  cloudConfigured=firebaseConfigured(); renderAuthBox();
+  if(!cloudConfigured)return;
+  try{
+    const appMod=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+    const authMod=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js');
+    const fsMod=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+    const app=appMod.initializeApp(FIREBASE_CONFIG);
+    cloudAuth=authMod.getAuth(app); cloudDb=fsMod.getFirestore(app);
+    cloudFns={...authMod,...fsMod}; cloudReady=true; renderAuthBox();
+    authMod.onAuthStateChanged(cloudAuth,async user=>{
+      cloudUser=user; cloudIsAdmin=false;
+      if(cloudUnsubGlobal){cloudUnsubGlobal();cloudUnsubGlobal=null;} if(cloudUnsubUser){cloudUnsubUser();cloudUnsubUser=null;}
+      if(!user){renderAuthBox();renderAll();return;}
+      try{const adminSnap=await fsMod.getDoc(fsMod.doc(cloudDb,CLOUD_COLLECTIONS.admins,user.uid));cloudIsAdmin=adminSnap.exists();}catch(e){cloudIsAdmin=false;}
+      cloudUnsubGlobal=fsMod.onSnapshot(fsMod.doc(cloudDb,CLOUD_COLLECTIONS.global,'appState'),snap=>{if(snap.exists())applyGlobalState(snap.data());},err=>console.warn('Global sync error',err));
+      cloudUnsubUser=fsMod.onSnapshot(fsMod.doc(cloudDb,CLOUD_COLLECTIONS.users,user.uid),snap=>{if(snap.exists())applyProfileState(snap.data());else saveProfileCloud();},err=>console.warn('User sync error',err));
+      renderAuthBox(); renderAll();
+    });
+  }catch(e){console.warn('Firebase no inició:',e);cloudReady=false;renderAuthBox();}
+}
+startCloud();
+
+// ═══ INIT ═══
+loadSaved();renderAll();
+</script>
+</body>
+</html>
